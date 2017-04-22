@@ -21,31 +21,31 @@ int main()
 
 	while (window.isOpen())
 	{
-		sf::Event event;
+		sf::Event e;
 
-		while (window.pollEvent(event))
+		while (window.pollEvent(e))
 		{
-			if (event.type == sf::Event::Closed)
+			if (e.type == sf::Event::Closed)
 				window.close();
 
-			if (event.type == sf::Event::KeyPressed)
+			if (e.type == sf::Event::KeyPressed)
 			{
-				if (!p1IsPressed && event.key.code == sf::Keyboard::S) // move paddle 1 down
+				if (!p1IsPressed && e.key.code == sf::Keyboard::S)
 				{
 					p1IsPressed = true;
 				}
-				if (!p2IsPressed && event.key.code == sf::Keyboard::K) // move paddle 1 down
+				if (!p2IsPressed && e.key.code == sf::Keyboard::K)
 				{
 					p2IsPressed = true;
 				}
 			}
-			if (event.type == sf::Event::KeyReleased)
+			if (e.type == sf::Event::KeyReleased)
 			{
-				if (p1IsPressed && event.key.code == sf::Keyboard::S) // move paddle 1 down
+				if (p1IsPressed && e.key.code == sf::Keyboard::S)
 				{
 					p1IsPressed = false;
 				}
-				if (p2IsPressed && event.key.code == sf::Keyboard::K) // move paddle 1 down
+				if (p2IsPressed && e.key.code == sf::Keyboard::K)
 				{
 					p2IsPressed = false;
 				}
