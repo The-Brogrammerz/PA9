@@ -8,14 +8,24 @@
 *****************************************************************************************/
 
 #include <iostream>
-#include <SFML\Graphics.hpp>
+#include "Menu.hpp"
+#include "Game.hpp"
+
+#define WIDTH 2500
+#define HEIGHT 1500
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(2500, 1500), "Chess");
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Chess");
+
+	Menu menu(WIDTH, HEIGHT);
+	Game game(WIDTH, HEIGHT);
 
 	bool p1IsPressed = false;
 	bool p2IsPressed = false;
+	bool enterIsPressed = false;
+
+	bool playing = false;
 
 	int direction = 1;
 
@@ -23,34 +33,83 @@ int main()
 	{
 		sf::Event e;
 
-		while (window.pollEvent(e))
+		if (playing)
 		{
-			if (e.type == sf::Event::Closed)
-				window.close();
+			while (window.pollEvent(e))
+			{
+				switch (e.type)
+				{
+				case sf::Event::Closed:
+					window.close();
+					break;
+				}
+			}
 
-			if (e.type == sf::Event::KeyPressed)
-			{
-				if (!p1IsPressed && e.key.code == sf::Keyboard::S)
-				{
-					p1IsPressed = true;
-				}
-				if (!p2IsPressed && e.key.code == sf::Keyboard::K)
-				{
-					p2IsPressed = true;
-				}
-			}
-			if (e.type == sf::Event::KeyReleased)
-			{
-				if (p1IsPressed && e.key.code == sf::Keyboard::S)
-				{
-					p1IsPressed = false;
-				}
-				if (p2IsPressed && e.key.code == sf::Keyboard::K)
-				{
-					p2IsPressed = false;
-				}
-			}
+			window.clear();
+			game.drawBoard(window);
 		}
+		else
+		{
+			while (window.pollEvent(e))
+			{
+				switch (e.type)
+				{
+				case sf::Event::Closed:
+					window.close();
+					break;
+
+				case sf::Event::KeyPressed:
+					if (!p1IsPressed && e.key.code == sf::Keyboard::Up)
+					{
+						menu.up();
+						p1IsPressed = true;
+					}
+					else if (!p2IsPressed && e.key.code == sf::Keyboard::Down)
+					{
+						menu.down();
+						p2IsPressed = true;
+					}
+					else if (!enterIsPressed && e.key.code == sf::Keyboard::Return)
+					{
+						enterIsPressed = true;
+					}
+
+					break;
+
+				case sf::Event::KeyReleased:
+					if (p1IsPressed && e.key.code == sf::Keyboard::Up)
+					{
+						p1IsPressed = false;
+					}
+					else if (p2IsPressed && e.key.code == sf::Keyboard::Down)
+					{
+						p2IsPressed = false;
+					}
+					
+					else if (enterIsPressed && e.key.code == sf::Keyboard::Return)
+					{
+						if (menu.getSelectedItem() == 1)
+						{
+							playing = true;
+						}
+						else if (menu.getSelectedItem() == 3)
+						{
+							exit(EXIT_SUCCESS);
+						}
+
+						enterIsPressed = false;
+					}
+
+					break;
+				}
+			}
+
+			window.clear();
+			menu.drawMenu(window);
+		}
+		
+
+		window.display();
 	}
 
 	return 0;
