@@ -1,5 +1,8 @@
+#pragma once
+
 #include <SFML\Graphics.hpp>
 #include <iostream>
+#include <string>
 
 class ChessBoard : public sf::RectangleShape
 {

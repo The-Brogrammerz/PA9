@@ -42,6 +42,10 @@ int main()
 				case sf::Event::Closed:
 					window.close();
 					break;
+				case sf::Event::KeyPressed:
+					if (e.key.code == sf::Keyboard::Escape)
+						playing = false;
+						break;
 				}
 			}
 
@@ -91,6 +95,10 @@ int main()
 						if (menu.getSelectedItem() == 1) // If the first option is selected, the first option being Play, set playing to be true
 						{
 							playing = true;
+						}
+						else if (menu.getSelectedItem() == 2)
+						{
+
 						}
 						else if (menu.getSelectedItem() == 3)
 						{
