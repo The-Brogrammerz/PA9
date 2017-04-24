@@ -1,4 +1,5 @@
 #include "ChessPieces.hpp"
+#include "ChessBoard.hpp"
 
 #define MAX_RECTANGLE_WIDTH 100
 #define MAX_RECTANGLE_HEIGHT 100
@@ -13,25 +14,22 @@ public:
 
 	void drawGame(sf::RenderWindow &win);
 
-	void up();
-	void down();
-
-	int getSelectedItem();
-
 private:
+	ChessBoard board[8][8];
 
-	sf::RectangleShape board[8][8];
+	ChessPieces blackTeam[16];
+	ChessPieces whiteTeam[16];
 };
 
 Game::Game(float width, float height)
 {
-	for (int r = 0; r < 8; r++)
+	for (int r = 0; r < 8; r++) // This creates the chess Board, checkered style. Essential to understand how this works
 	{
 		for (int c = 0; c < 8; c++)
 		{
-			if (r % 2 == 0)
+			if (r % 2 == 0) // This is here so that every other row, the first tile of the row will be red, and in between will be white
 			{
-				if (c % 2 == 0)
+				if (c % 2 == 0) // This is here so that every column the tiles will change from red to white to red to white...
 				{
 					board[r][c].setFillColor(sf::Color::Red);
 					board[r][c].setPosition(sf::Vector2f(width / 2 - 400 + MAX_RECTANGLE_WIDTH * c, height / 2 - 400 + MAX_RECTANGLE_HEIGHT * r));
@@ -44,7 +42,7 @@ Game::Game(float width, float height)
 					board[r][c].setSize(sf::Vector2f(MAX_RECTANGLE_WIDTH, MAX_RECTANGLE_HEIGHT));
 				}
 			}
-			else
+			else // This is here so that every other row, the first tile of the row will be red, and in between will be white
 			{
 				if ((c+1) % 2 == 0)
 				{
@@ -74,7 +72,12 @@ void Game::drawBoard(sf::RenderWindow &win)
 	{
 		for (int c = 0; c < 8; c++)
 		{
-			win.draw(board[r][c]);
+			win.draw(board[r][c]); // Draws the entire board to the screen
 		}
 	}
+}
+
+void Game::drawGame(sf::RenderWindow &win)
+{
+	drawBoard(win); //Must be executed before anything else so that everything else is drawn ABOVE the board
 }

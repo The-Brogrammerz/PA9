@@ -151,9 +151,16 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bishops.hpp" />
+    <ClInclude Include="ChessBoard.hpp" />
     <ClInclude Include="ChessPieces.hpp" />
     <ClInclude Include="Game.hpp" />
+    <ClInclude Include="Horses.hpp" />
+    <ClInclude Include="Kings.hpp" />
     <ClInclude Include="Menu.hpp" />
+    <ClInclude Include="Pawns.hpp" />
+    <ClInclude Include="Queens.hpp" />
+    <ClInclude Include="Rookes.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

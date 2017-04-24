@@ -1,7 +1,7 @@
 #include <SFML\Graphics.hpp>
 #include <iostream>
 
-class ChessPieces
+class ChessPieces // Base Class for All of the Chess Pieces
 {
 public:
 	ChessPieces();

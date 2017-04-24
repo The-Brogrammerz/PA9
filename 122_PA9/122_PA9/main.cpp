@@ -16,10 +16,10 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Chess");
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Chess"); // The entire program will run on this single window
 
-	Menu menu(WIDTH, HEIGHT);
-	Game game(WIDTH, HEIGHT);
+	Menu menu(WIDTH, HEIGHT); // Interface for the Menu
+	Game game(WIDTH, HEIGHT); // Interface for the game after the user clicks Play on the Main Menu
 
 	bool p1IsPressed = false;
 	bool p2IsPressed = false;
@@ -33,9 +33,9 @@ int main()
 	{
 		sf::Event e;
 
-		if (playing)
+		if (playing) // This will only be executed once the user has selected "Play" on the main menu
 		{
-			while (window.pollEvent(e))
+			while (window.pollEvent(e)) // While loop is used to detect when an event has occured, an event being an interaction between the user and the game
 			{
 				switch (e.type)
 				{
@@ -46,37 +46,37 @@ int main()
 			}
 
 			window.clear();
-			game.drawBoard(window);
+			game.drawGame(window); // Draw the game instead
 		}
-		else
+		else // If user selects "Play" option, playing will be set to true, and therefore, the main menu will stop being drawn to the window screen
 		{
-			while (window.pollEvent(e))
+			while (window.pollEvent(e)) // While loop is used to detect when an event has occured, an event being an interaction between the user and the game
 			{
 				switch (e.type)
 				{
-				case sf::Event::Closed:
+				case sf::Event::Closed: // If user clicks close, close the window.
 					window.close();
 					break;
 
 				case sf::Event::KeyPressed:
-					if (!p1IsPressed && e.key.code == sf::Keyboard::Up)
+					if (!p1IsPressed && e.key.code == sf::Keyboard::Up) //If user presses up key
 					{
-						menu.up();
+						menu.up(); // Changes the menu to highlight the option above currently selected option
 						p1IsPressed = true;
 					}
-					else if (!p2IsPressed && e.key.code == sf::Keyboard::Down)
+					else if (!p2IsPressed && e.key.code == sf::Keyboard::Down) //If user presses down key
 					{
-						menu.down();
+						menu.down(); // Changes the menu to highlight the option below currently selected option
 						p2IsPressed = true;
 					}
-					else if (!enterIsPressed && e.key.code == sf::Keyboard::Return)
+					else if (!enterIsPressed && e.key.code == sf::Keyboard::Return) //If user presses Enter key
 					{
 						enterIsPressed = true;
 					}
 
 					break;
 
-				case sf::Event::KeyReleased:
+				case sf::Event::KeyReleased: // When a user releases the key
 					if (p1IsPressed && e.key.code == sf::Keyboard::Up)
 					{
 						p1IsPressed = false;
@@ -88,7 +88,7 @@ int main()
 					
 					else if (enterIsPressed && e.key.code == sf::Keyboard::Return)
 					{
-						if (menu.getSelectedItem() == 1)
+						if (menu.getSelectedItem() == 1) // If the first option is selected, the first option being Play, set playing to be true
 						{
 							playing = true;
 						}
@@ -105,7 +105,7 @@ int main()
 			}
 
 			window.clear();
-			menu.drawMenu(window);
+			menu.drawMenu(window); // Draws the menu
 		}
 		
 
