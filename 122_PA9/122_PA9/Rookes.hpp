@@ -21,7 +21,8 @@ private:
 
 Rookes::Rookes()
 {
-
+	tex.loadFromFile("White Rook.png");
+	this->setTexture(&tex);
 }
 
 Rookes::~Rookes()

@@ -21,7 +21,8 @@ private:
 
 Kings::Kings()
 {
-	
+	tex.loadFromFile("White King.png");
+	this->setTexture(&tex);
 }
 
 Kings::~Kings()

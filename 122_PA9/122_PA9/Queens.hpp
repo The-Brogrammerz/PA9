@@ -22,7 +22,8 @@ private:
 
 Queens::Queens()
 {
-	
+	tex.loadFromFile("White Queen.png");
+	this->setTexture(&tex);
 }
 
 Queens::~Queens()

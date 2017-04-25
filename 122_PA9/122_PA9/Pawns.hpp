@@ -21,7 +21,8 @@ private:
 
 Pawns::Pawns()
 {
-	
+	tex.loadFromFile("White Pawn.png");
+	this->setTexture(&tex);
 }
 
 Pawns::~Pawns()
