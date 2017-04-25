@@ -16,13 +16,15 @@ public:
 
 	int checkIfCheckmate(); // returns 0 if no, 1 if check, 2 if checkmate
 private:
-
+	
 };
 
 Bishops::Bishops()
 {
 	tex.loadFromFile("White Bishop.png");
 	this->setTexture(&tex);
+
+	type = 'B';
 }
 
 Bishops::~Bishops()

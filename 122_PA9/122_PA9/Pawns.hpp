@@ -23,6 +23,8 @@ Pawns::Pawns()
 {
 	tex.loadFromFile("White Pawn.png");
 	this->setTexture(&tex);
+
+	type = 'P';
 }
 
 Pawns::~Pawns()

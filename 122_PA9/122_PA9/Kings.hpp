@@ -23,6 +23,8 @@ Kings::Kings()
 {
 	tex.loadFromFile("White King.png");
 	this->setTexture(&tex);
+
+	type = 'K';
 }
 
 Kings::~Kings()

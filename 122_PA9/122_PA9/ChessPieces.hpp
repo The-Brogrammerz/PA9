@@ -6,7 +6,6 @@
 class ChessPieces : public sf::RectangleShape // Base Class for All of the Chess Pieces
 {
 public:
-
 	virtual void killOpponentPiece() = 0;
 
 	virtual bool move() = 0;
@@ -23,7 +22,9 @@ public:
 
 protected:
 	int x; // Position on row of chess board
-	int y; // Position on column of chess board
+	int y; // Position on column of chess boar
+
+	char type;
 
 	sf::Texture tex;
 };

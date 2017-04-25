@@ -14,6 +14,8 @@
 #define WIDTH 650
 #define HEIGHT 650
 
+using std::cout;
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Chess"); // The entire program will run on this single window
@@ -28,13 +30,6 @@ int main()
 	bool playing = false;
 
 	int direction = 1, i = 0, imageWidth = 0, imageHeight = 0, scalar = 0;
-
-	sf::Event evnt;
-	sf::Texture t1; // figure image
-	sf::Sprite p1[16], p2[16]; // to hold all the player figures 
-	//Note: I could of just did one array of 32
-
-	t1.loadFromFile("../figures.png"); // all the pieces from file
 
 	
 	while (window.isOpen())
@@ -54,17 +49,14 @@ int main()
 					if (e.key.code == sf::Keyboard::Escape)
 						playing = false;
 					break;
+				case sf::Event::MouseButtonPressed:
+					
+					break;
 				}
 			}
 
 			window.clear();
 			game.drawGame(window); // Draw the game instead
-			for (i = 0; i < 16; i++) {
-				window.draw(p1[i]);
-			}
-			for (i = 0; i < 16; i++) {
-				window.draw(p2[i]);
-			}
 		}
 		else // If user selects "Play" option, playing will be set to true, and therefore, the main menu will stop being drawn to the window screen
 		{

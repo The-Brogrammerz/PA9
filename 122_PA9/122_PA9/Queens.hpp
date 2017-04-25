@@ -24,6 +24,8 @@ Queens::Queens()
 {
 	tex.loadFromFile("White Queen.png");
 	this->setTexture(&tex);
+
+	type = 'Q';
 }
 
 Queens::~Queens()

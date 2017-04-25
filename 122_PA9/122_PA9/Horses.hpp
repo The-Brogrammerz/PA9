@@ -23,6 +23,8 @@ Horses::Horses()
 {
 	tex.loadFromFile("White Horse.png");
 	this->setTexture(&tex);
+
+	type = 'H';
 }
 
 Horses::~Horses()

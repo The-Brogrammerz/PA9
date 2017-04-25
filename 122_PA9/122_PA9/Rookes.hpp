@@ -23,6 +23,8 @@ Rookes::Rookes()
 {
 	tex.loadFromFile("White Rook.png");
 	this->setTexture(&tex);
+
+	type = 'R';
 }
 
 Rookes::~Rookes()

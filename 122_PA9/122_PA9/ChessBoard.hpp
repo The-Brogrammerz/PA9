@@ -1,5 +1,6 @@
 #include <SFML\Graphics.hpp>
 #include <iostream>
+#include "ChessPieces.hpp"
 
 class ChessBoard : public sf::RectangleShape
 {
@@ -10,8 +11,12 @@ public:
 
 	bool getIsOccupied();
 	void setIsOccupied(bool &s);
+
+	void setChessPiece(ChessPieces *piece);
 protected:
 	bool spaceIsOccupied;
+
+	ChessPieces *piece;
 };
 
 ChessBoard::ChessBoard()
