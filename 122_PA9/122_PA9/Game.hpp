@@ -604,7 +604,7 @@ bool Game::moveQueen(int &x1, int &x2, int &y1, int &y2, Team team)
 	}
 	else if (y2 > y1 && x2 < x1)
 	{
-		if (abs(y2 - y1) == abs(x2 - x1) )
+		if (abs(y2 - y1) == abs(x2 - x1))
 		{
 			for (int i = 1; i <= abs(y2 - y1); i++)
 			{
@@ -661,8 +661,6 @@ bool Game::moveQueen(int &x1, int &x2, int &y1, int &y2, Team team)
 		}
 		else
 			return false;
-
-		return true;
 	}
 	else if (y2 < y1 && x2 < x1)
 	{
@@ -1172,8 +1170,6 @@ bool Game::moveBishop(int &x1, int &x2, int &y1, int &y2, Team team)
 		}
 		else
 			return false;
-
-		return true;
 	}
 	else if (y2 < y1 && x2 < x1)
 	{
@@ -1864,32 +1860,403 @@ bool Game::check(ChessPieces *&piece)
 {
 	if (piece->getType() == 'K')
 	{
-
-	}
-	if (piece->getType() == 'Q')
-	{
-
-	}
-	if (piece->getType() == 'R')
-	{
-
-	}
-	if (piece->getType() == 'B')
-	{
-
-	}
-	if (piece->getType() == 'H')
-	{
-
-	}
-	if (piece->getType() == 'P' && piece->getTeam() == WHITE)
-	{
-		if (board[piece->getY() - 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getType() == 'K' ) && board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		if (piece->getX() - 1 >= 0 && piece->getY() - 1 >= 0 && board[piece->getY() - 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
 		{
 			cout << "Check" << endl;
 			return true;
 		}
-		else if(board[piece->getY() - 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		else if (piece->getY() - 1 >= 0 && piece->getX() + 1 < 8 && board[piece->getY() - 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() + 1 < 8 && piece->getX() - 1 >= 0 && board[piece->getY() + 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() + 1 < 8 && piece->getX() + 1 < 8 && board[piece->getY() + 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() + 1 < 8 && piece->getX() && board[piece->getY() + 1][piece->getX()].getIsOccupied() && (board[piece->getY() + 1][piece->getX()].getChessPiece()->getType() == 'K') && board[piece->getY() + 1][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() - 1 >= 0 && piece->getX() && board[piece->getY() - 1][piece->getX()].getIsOccupied() && (board[piece->getY() - 1][piece->getX()].getChessPiece()->getType() == 'K') && board[piece->getY() - 1][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() && piece->getX() - 1 >= 0 && board[piece->getY()][piece->getX() - 1].getIsOccupied() && (board[piece->getY()][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY()][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() && piece->getX() + 1 < 8 && board[piece->getY()][piece->getX() + 1].getIsOccupied() && (board[piece->getY()][piece->getX() + 1].getChessPiece()->getType() == 'K') && board[piece->getY()][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	if (piece->getType() == 'Q')
+	{
+		for (int i = 1; piece->getX() + i < 8 && piece->getY() + i < 8; i++)
+		{
+			if (board[piece->getY() + i][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0 && piece->getX() + i < 8; i++)
+		{
+			if (board[piece->getY() - i][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0 && piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY() - i][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() + i < 8 && piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY() + i][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() + i < 8; i++)
+		{
+			if (board[piece->getY() + i][piece->getX()].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX()].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0; i++)
+		{
+			if (board[piece->getY() - i][piece->getX()].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX()].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getX() + i < 8; i++)
+		{
+			if (board[piece->getY()][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY()][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY()][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY()][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY()][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY()][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+	}
+
+	if (piece->getType() == 'R')
+	{
+		for (int i = 1; piece->getX() + i < 8; i++)
+		{
+			if (board[piece->getY()][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY()][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY()][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY()][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY()][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY()][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0; i++)
+		{
+			if (board[piece->getY() - i][piece->getX()].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX()].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() + i < 8; i++)
+		{
+			if (board[piece->getY() + i][piece->getX()].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX()].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+	}
+	if (piece->getType() == 'B')
+	{
+		for (int i = 1; piece->getX() + i < 8 && piece->getY() + i < 8; i++)
+		{
+			if (board[piece->getY() + i][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0 && piece->getX() + i < 8; i++)
+		{
+			if (board[piece->getY() - i][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0 && piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY() - i][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() + i < 8 && piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY() + i][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+	}
+	if (piece->getType() == 'H')
+	{
+		if (piece->getY() + 2 < 8 && piece->getX() + 1 < 8)
+		{
+			if (board[piece->getY() + 2][piece->getX() + 1].getIsOccupied())
+			{
+				if ((board[piece->getY() + 2][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 2][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() + 2 < 8 && piece->getX() - 1 >= 0)
+		{
+			if (board[piece->getY() + 2][piece->getX() - 1].getIsOccupied())
+			{
+				if ((board[piece->getY() + 2][piece->getX() - 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 2][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() - 2 >= 0 && piece->getX() - 1 >= 0)
+		{
+			if (board[piece->getY() - 2][piece->getX() - 1].getIsOccupied())
+			{
+				if ((board[piece->getY() - 2][piece->getX() - 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 2][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() - 2 >= 0 && piece->getX() + 1 < 8)
+		{
+			if (board[piece->getY() - 2][piece->getX() + 1].getIsOccupied())
+			{
+				if ((board[piece->getY() - 2][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 2][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() - 1 >= 0 && piece->getX() + 2 < 8)
+		{
+			if (board[piece->getY() - 1][piece->getX() + 2].getIsOccupied())
+			{
+				if ((board[piece->getY() - 1][piece->getX() + 2].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() + 2].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() + 1 < 8 && piece->getX() + 2 < 8)
+		{
+			if (board[piece->getY() + 1][piece->getX() + 2].getIsOccupied())
+			{
+				if ((board[piece->getY() + 1][piece->getX() + 2].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() + 2].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() - 1 >= 0 && piece->getX() - 2 >= 0)
+		{
+			if (board[piece->getY() - 1][piece->getX() - 2].getIsOccupied())
+			{
+				if ((board[piece->getY() - 1][piece->getX() - 2].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() - 2].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() + 1 < 8 && piece->getX() - 2 >= 0)
+		{
+			if (board[piece->getY() + 1][piece->getX() - 2].getIsOccupied())
+			{
+				if ((board[piece->getY() + 1][piece->getX() - 2].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() - 2].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+	}
+	if (piece->getType() == 'P' && piece->getTeam() == WHITE)
+	{
+		if (piece->getY() - 1 >= 0 && piece->getX() - 1 >= 0 && board[piece->getY() - 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() - 1 >= 0 && piece->getX() + 1 < 8 && board[piece->getY() - 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
 		{
 			cout << "Check" << endl;
 			return true;
@@ -1902,12 +2269,12 @@ bool Game::check(ChessPieces *&piece)
 	}
 	if (piece->getType() == 'P' && piece->getTeam() == BLACK)
 	{
-		if (board[piece->getY() + 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getType() == 'K' ) && board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		if (piece->getY() + 1 < 8 && piece->getX() - 1 >= 0 && board[piece->getY() + 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
 		{
 			cout << "Check" << endl;
 			return true;
 		}
-		else if(board[piece->getY() + 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		else if (piece->getY() + 1 < 8 && piece->getX() + 1 < 8 && board[piece->getY() + 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
 		{
 			cout << "Check" << endl;
 			return true;
