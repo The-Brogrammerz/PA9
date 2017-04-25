@@ -22,12 +22,7 @@ private:
 
 Queens::Queens()
 {
-	tex.loadFromFile("chess-piece-texture.png");
-	this->setTexture(&tex);
-
-	sf::Vector2u textureSize = tex.getSize();
-
-	this->setTextureRect(sf::IntRect(textureSize.x*1 / 3, 0, (textureSize.x) / 12 - 10, (textureSize.y)));
+	
 }
 
 Queens::~Queens()

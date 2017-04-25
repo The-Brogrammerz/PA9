@@ -16,10 +16,10 @@ public:
 	virtual int checkIfCheckmate() = 0; // returns 0 if no, 1 if check, 2 if checkmate
 
 	int getX();
-	void setX(int x);
+	void setX(int newX);
 
 	int getY();
-	void setY(int x);
+	void setY(int newY);
 
 protected:
 	int x; // Position on row of chess board

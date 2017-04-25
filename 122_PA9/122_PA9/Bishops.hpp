@@ -21,12 +21,7 @@ private:
 
 Bishops::Bishops()
 {
-	tex.loadFromFile("chess-piece-texture.png");
-	this->setTexture(&tex);
-
-	sf::Vector2u textureSize = tex.getSize();
-
-	this->setTextureRect(sf::IntRect(textureSize.x/4 - 10, textureSize.y / 5 - 10, (textureSize.x) / 12 - 10, (textureSize.y*4/5) - 10));
+	
 }
 
 Bishops::~Bishops()

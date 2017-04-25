@@ -180,7 +180,8 @@ int main()
 
 	// Pawn
 	scalar = 0;
-	for (i = 8; i < 16; i++) {
+	for (i = 8; i < 16; i++) 
+	{
 		p2[i].setOrigin(5, 30);
 		p2[i].setTexture(t1);
 		p2[i].setTextureRect(sf::IntRect(imageWidth * 5, imageHeight, imageWidth, imageHeight));
@@ -201,6 +202,10 @@ int main()
 				{
 				case sf::Event::Closed:
 					window.close();
+					break;
+				case sf::Event::KeyPressed:
+					if (e.key.code == sf::Keyboard::Escape)
+						playing = false;
 					break;
 				}
 			}

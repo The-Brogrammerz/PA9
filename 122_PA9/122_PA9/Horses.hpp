@@ -21,12 +21,7 @@ private:
 
 Horses::Horses()
 {
-	tex.loadFromFile("chess-piece-texture.png");
-	this->setTexture(&tex);
-
-	sf::Vector2u textureSize = tex.getSize();
-
-	this->setTextureRect(sf::IntRect(textureSize.x / 12 - 10, textureSize.y / 2 - 20, ((textureSize.x) / 6 - 10) / 2, textureSize.y / 2));
+	
 }
 
 Horses::~Horses()

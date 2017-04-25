@@ -21,12 +21,7 @@ private:
 
 Kings::Kings()
 {
-	tex.loadFromFile("chess-piece-texture.png");
-	this->setTexture(&tex);
-
-	sf::Vector2u textureSize = tex.getSize();
-
-	this->setTextureRect(sf::IntRect(textureSize.x * 5 / 12, 0, (textureSize.x) / 12 - 10, (textureSize.y)));
+	
 }
 
 Kings::~Kings()

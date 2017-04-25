@@ -17,8 +17,8 @@ public:
 private:
 	ChessBoard board[8][8];
 
-	ChessPieces blackTeam[16];
-	ChessPieces whiteTeam[16];
+	ChessPieces *blackTeam[16];
+	ChessPieces *whiteTeam[16];
 };
 
 Game::Game(float width, float height)
