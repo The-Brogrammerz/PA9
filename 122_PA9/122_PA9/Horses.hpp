@@ -5,22 +5,33 @@
 class Horses : public ChessPieces
 {
 public:
-	Horses();
+	Horses(Team newT);
 	~Horses();
 
 	 void killOpponentPiece();
 
-	 bool move();
+	 bool move(sf::Vector2i &newCoordinates);
 
 	 bool checkPath();
 
 	 int checkIfCheckmate(); // returns 0 if no, 1 if check, 2 if checkmate
+
+	 char getType()
+	 {
+		 return this->type;
+	 }
+
+	 Team getTeam() 
+	 {
+		 return this->t;
+	 }
 private:
 
 };
 
-Horses::Horses()
+Horses::Horses(Team newT)
 {
+	this->t = newT;
 	tex.loadFromFile("White Horse.png");
 	this->setTexture(&tex);
 
@@ -37,8 +48,11 @@ void Horses::killOpponentPiece()
 
 }
 
-bool Horses::move()
+bool Horses::move(sf::Vector2i &newCoordinates)
 {
+	this->setX(newCoordinates.x);
+	this->setY(newCoordinates.y);
+
 	return true;
 }
 

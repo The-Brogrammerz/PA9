@@ -12,11 +12,17 @@ public:
 	bool getIsOccupied();
 	void setIsOccupied(bool &s);
 
-	void setChessPiece(ChessPieces *piece);
+	void setChessPiece(ChessPieces *&piece);
+
+	ChessPieces *& getChessPiece();
+
+	bool killChessPiece();
 protected:
 	bool spaceIsOccupied;
 
 	ChessPieces *piece;
+	int team; // representation of which teams piece is on the space
+	char pieceType;
 };
 
 ChessBoard::ChessBoard()
@@ -31,6 +37,7 @@ ChessBoard::ChessBoard(const sf::Color &color, const sf::Vector2f &position, con
 	this->setSize(size);
 
 	spaceIsOccupied = false;
+	piece = nullptr;
 }
 
 ChessBoard::~ChessBoard()
@@ -46,4 +53,21 @@ bool ChessBoard::getIsOccupied()
 void ChessBoard::setIsOccupied(bool &s)
 {
 	spaceIsOccupied = s;
+}
+
+void ChessBoard::setChessPiece(ChessPieces *&piece)
+{
+	this->piece = piece;
+}
+
+ChessPieces *& ChessBoard::getChessPiece() 
+{
+	return piece;
+}
+
+bool ChessBoard::killChessPiece()
+{
+	delete piece;
+
+	return true;
 }

@@ -5,22 +5,33 @@
 class Bishops : public ChessPieces
 {
 public:
-	Bishops();
+	Bishops(Team newT);
 	~Bishops();
 
 	void killOpponentPiece();
 
-	bool move();
+	bool move(sf::Vector2i &newCoordinates);
 
 	bool checkPath();
 
 	int checkIfCheckmate(); // returns 0 if no, 1 if check, 2 if checkmate
+
+	char getType()
+	{
+		return this->type;
+	}
+
+	Team getTeam()
+	{
+		return this->t;
+	}
 private:
 	
 };
 
-Bishops::Bishops()
+Bishops::Bishops(Team newT) 
 {
+	this->t = newT;
 	tex.loadFromFile("White Bishop.png");
 	this->setTexture(&tex);
 
@@ -37,8 +48,11 @@ void Bishops::killOpponentPiece()
 
 }
 
-bool Bishops::move()
+bool Bishops::move(sf::Vector2i &newCoordinates)
 {
+	this->setX(newCoordinates.x);
+	this->setY(newCoordinates.y);
+
 	return true;
 }
 
