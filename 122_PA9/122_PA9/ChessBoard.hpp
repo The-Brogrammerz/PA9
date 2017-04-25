@@ -12,6 +12,8 @@ public:
 	void setIsOccupied(bool &s);
 protected:
 	bool spaceIsOccupied;
+	int team; // representation of which teams piece is on the space
+	char pieceType;
 };
 
 ChessBoard::ChessBoard()

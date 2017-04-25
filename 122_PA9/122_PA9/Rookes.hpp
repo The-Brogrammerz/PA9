@@ -5,7 +5,7 @@
 class Rookes : public ChessPieces
 {
 public:
-	Rookes();
+	Rookes(Team newT);
 	~Rookes();
 
 	 void killOpponentPiece();
@@ -19,8 +19,9 @@ private:
 
 };
 
-Rookes::Rookes()
+Rookes::Rookes(Team newT)
 {
+	this->t = newT;
 	tex.loadFromFile("White Rook.png");
 	this->setTexture(&tex);
 }

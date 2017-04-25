@@ -5,7 +5,7 @@
 class Kings : public ChessPieces
 {
 public:
-	Kings();
+	Kings(Team newT);
 	~Kings();
 
 	 void killOpponentPiece();
@@ -19,8 +19,9 @@ private:
 
 };
 
-Kings::Kings()
+Kings::Kings(Team newT)
 {
+	this->t = newT;
 	tex.loadFromFile("White King.png");
 	this->setTexture(&tex);
 }

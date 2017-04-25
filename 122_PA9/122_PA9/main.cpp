@@ -54,6 +54,7 @@ int main()
 					if (e.key.code == sf::Keyboard::Escape)
 						playing = false;
 					break;
+				
 				}
 			}
 

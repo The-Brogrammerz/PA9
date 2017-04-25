@@ -5,7 +5,7 @@
 class Bishops : public ChessPieces
 {
 public:
-	Bishops();
+	Bishops(Team newT);
 	~Bishops();
 
 	void killOpponentPiece();
@@ -19,8 +19,9 @@ private:
 
 };
 
-Bishops::Bishops()
+Bishops::Bishops(Team newT) 
 {
+	this->t = newT;
 	tex.loadFromFile("White Bishop.png");
 	this->setTexture(&tex);
 }

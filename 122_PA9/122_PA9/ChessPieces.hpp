@@ -3,10 +3,14 @@
 #include <SFML\Graphics.hpp>
 #include <iostream>
 
+typedef enum Team {
+	BLACK, WHITE
+};
 class ChessPieces : public sf::RectangleShape // Base Class for All of the Chess Pieces
 {
 public:
-
+	ChessPieces();
+	~ChessPieces();
 	virtual void killOpponentPiece() = 0;
 
 	virtual bool move() = 0;
@@ -24,10 +28,18 @@ public:
 protected:
 	int x; // Position on row of chess board
 	int y; // Position on column of chess board
-
+	Team t;
 	sf::Texture tex;
 };
 
+ChessPieces::ChessPieces()
+{
+
+}
+ChessPieces::~ChessPieces()
+{
+
+}
 int ChessPieces::getX()
 {
 	return x;

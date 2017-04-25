@@ -6,7 +6,7 @@
 class Queens : public ChessPieces
 {
 public:
-	Queens(void);
+	Queens(Team newT);
 	 ~Queens(void);
 
 	 void killOpponentPiece();
@@ -20,8 +20,9 @@ private:
 
 };
 
-Queens::Queens()
+Queens::Queens(Team newT)
 {
+	this->t = newT;
 	tex.loadFromFile("White Queen.png");
 	this->setTexture(&tex);
 }

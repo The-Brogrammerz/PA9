@@ -72,33 +72,34 @@ Game::Game(float width, float height)
 	{
 		if (i < 8)
 		{
-			blackTeam[i] = new Pawns;
+			blackTeam[i] = new Pawns(BLACK);
 			blackTeam[i]->setSize(sf::Vector2f(WIDTH, HEIGHT));
 			blackTeam[i]->setPosition(sf::Vector2f(width / 2 - 325 + WIDTH * i, height / 2 - 325 + HEIGHT * 1));
 			blackTeam[i]->setX(i);
 			blackTeam[i]->setY(1);
+
 			blackTeam[i]->setFillColor(sf::Color::Black);
 		}
 		else
 		{
 			if (i == 8)
-				blackTeam[i] = new Rookes;
+				blackTeam[i] = new Rookes(BLACK);
 			else if (i == 9)
-				blackTeam[i] = new Horses;
+				blackTeam[i] = new Horses(BLACK);
 			else if (i == 10)
-				blackTeam[i] = new Bishops;
+				blackTeam[i] = new Bishops(BLACK);
 			else if (i == 11)
 			{
-				blackTeam[i] = new Queens;
+				blackTeam[i] = new Queens(BLACK);
 			}
 			else if (i == 12)
-				blackTeam[i] = new Kings;
+				blackTeam[i] = new Kings(BLACK);
 			else if (i == 13)
-				blackTeam[i] = new Bishops;
+				blackTeam[i] = new Bishops(BLACK);
 			else if (i == 14)
-				blackTeam[i] = new Horses;
+				blackTeam[i] = new Horses(BLACK);
 			else
-				blackTeam[i] = new Rookes;
+				blackTeam[i] = new Rookes(BLACK);
 
 			blackTeam[i]->setX(i);
 			blackTeam[i]->setY(0);
@@ -113,7 +114,7 @@ Game::Game(float width, float height)
 	{
 		if (i < 8)
 		{
-			whiteTeam[i] = new Pawns;
+			whiteTeam[i] = new Pawns(WHITE);
 			whiteTeam[i]->setSize(sf::Vector2f(WIDTH, HEIGHT));
 			whiteTeam[i]->setPosition(sf::Vector2f(width / 2 - 325 + WIDTH * i, height / 2 - 325 + HEIGHT * 6));
 			blackTeam[i]->setX(i);
@@ -122,23 +123,23 @@ Game::Game(float width, float height)
 		else
 		{
 			if (i == 8)
-				whiteTeam[i] = new Rookes;
+				whiteTeam[i] = new Rookes(WHITE);
 			else if (i == 9)
-				whiteTeam[i] = new Horses;
+				whiteTeam[i] = new Horses(WHITE);
 			else if (i == 10)
-				whiteTeam[i] = new Bishops;
+				whiteTeam[i] = new Bishops(WHITE);
 			else if (i == 11)
 			{
-				whiteTeam[i] = new Queens;
+				whiteTeam[i] = new Queens(WHITE);
 			}
 			else if (i == 12)
-				whiteTeam[i] = new Kings;
+				whiteTeam[i] = new Kings(WHITE);
 			else if (i == 13)
-				whiteTeam[i] = new Bishops;
+				whiteTeam[i] = new Bishops(WHITE);
 			else if (i == 14)
-				whiteTeam[i] = new Horses;
+				whiteTeam[i] = new Horses(WHITE);
 			else
-				whiteTeam[i] = new Rookes;
+				whiteTeam[i] = new Rookes(WHITE);
 
 			blackTeam[i]->setX(i);
 			blackTeam[i]->setY(7);
