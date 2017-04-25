@@ -1,8 +1,14 @@
 #include "ChessPieces.hpp"
 #include "ChessBoard.hpp"
+#include "Bishops.hpp"
+#include "Kings.hpp"
+#include "Horses.hpp"
+#include "Rookes.hpp"
+#include "Pawns.hpp"
+#include "Queens.hpp"
 
-#define WIDTH 40
-#define HEIGHT 40
+#define WIDTH 81.25
+#define HEIGHT 81.25
 
 class Game
 {
@@ -19,6 +25,8 @@ private:
 
 	ChessPieces *blackTeam[16];
 	ChessPieces *whiteTeam[16];
+
+	int totalTurns;
 };
 
 Game::Game(float width, float height)
@@ -59,6 +67,88 @@ Game::Game(float width, float height)
 			}
 		}
 	}
+
+	for (int i = 0; i < 16; i++) //This for loop sets up the black team on the top side of the chess board
+	{
+		if (i < 8)
+		{
+			blackTeam[i] = new Pawns;
+			blackTeam[i]->setSize(sf::Vector2f(WIDTH, HEIGHT));
+			blackTeam[i]->setPosition(sf::Vector2f(width / 2 - 325 + WIDTH * i, height / 2 - 325 + HEIGHT * 1));
+			blackTeam[i]->setX(i);
+			blackTeam[i]->setY(1);
+			blackTeam[i]->setFillColor(sf::Color::Black);
+		}
+		else
+		{
+			if (i == 8)
+				blackTeam[i] = new Rookes;
+			else if (i == 9)
+				blackTeam[i] = new Horses;
+			else if (i == 10)
+				blackTeam[i] = new Bishops;
+			else if (i == 11)
+			{
+				blackTeam[i] = new Queens;
+			}
+			else if (i == 12)
+				blackTeam[i] = new Kings;
+			else if (i == 13)
+				blackTeam[i] = new Bishops;
+			else if (i == 14)
+				blackTeam[i] = new Horses;
+			else
+				blackTeam[i] = new Rookes;
+
+			blackTeam[i]->setX(i);
+			blackTeam[i]->setY(0);
+			blackTeam[i]->setFillColor(sf::Color::Black);
+
+			blackTeam[i]->setSize(sf::Vector2f(WIDTH, HEIGHT));
+			blackTeam[i]->setPosition(sf::Vector2f(width / 2 - 325 + WIDTH * (i - 8), height / 2 - 325 + HEIGHT * 0));
+		}
+	}
+
+	for (int i = 0; i < 16; i++) //This for loop sets up the white team on the bottom side of the chess board
+	{
+		if (i < 8)
+		{
+			whiteTeam[i] = new Pawns;
+			whiteTeam[i]->setSize(sf::Vector2f(WIDTH, HEIGHT));
+			whiteTeam[i]->setPosition(sf::Vector2f(width / 2 - 325 + WIDTH * i, height / 2 - 325 + HEIGHT * 6));
+			blackTeam[i]->setX(i);
+			blackTeam[i]->setY(6);
+		}
+		else
+		{
+			if (i == 8)
+				whiteTeam[i] = new Rookes;
+			else if (i == 9)
+				whiteTeam[i] = new Horses;
+			else if (i == 10)
+				whiteTeam[i] = new Bishops;
+			else if (i == 11)
+			{
+				whiteTeam[i] = new Queens;
+			}
+			else if (i == 12)
+				whiteTeam[i] = new Kings;
+			else if (i == 13)
+				whiteTeam[i] = new Bishops;
+			else if (i == 14)
+				whiteTeam[i] = new Horses;
+			else
+				whiteTeam[i] = new Rookes;
+
+			blackTeam[i]->setX(i);
+			blackTeam[i]->setY(7);
+
+			whiteTeam[i]->setSize(sf::Vector2f(WIDTH, HEIGHT));
+			whiteTeam[i]->setPosition(sf::Vector2f(width / 2 - 325 + WIDTH * (i - 8), height / 2 - 325 + HEIGHT * 7));
+		}
+	}
+
+	totalTurns = 0;
 }
 
 Game::~Game()
@@ -80,4 +170,12 @@ void Game::drawBoard(sf::RenderWindow &win)
 void Game::drawGame(sf::RenderWindow &win)
 {
 	drawBoard(win); //Must be executed before anything else so that everything else is drawn ABOVE the board
+
+	/*win.draw(escapeText);*/
+
+	for (int c = 0; c < 16; c++)
+	{
+		win.draw(*blackTeam[c]); // Draws the black and white pieces to the screen
+		win.draw(*whiteTeam[c]);
+	}
 }

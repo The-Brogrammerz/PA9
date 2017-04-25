@@ -21,7 +21,8 @@ private:
 
 Bishops::Bishops()
 {
-	
+	tex.loadFromFile("White Bishop.png");
+	this->setTexture(&tex);
 }
 
 Bishops::~Bishops()
