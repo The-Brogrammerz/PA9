@@ -26,8 +26,24 @@ public:
 
 	void shiftArrayPositions(ChessPieces *arr[], int startIndex, int length);
 
+	bool moveKing(int &x1, int &x2, int &y1, int &y2, Team team);
+
+	bool moveQueen(int &x1, int &x2, int &y1, int &y2, Team team);
+
+	bool moveBishop(int &x1, int &x2, int &y1, int &y2, Team team);
+
+	bool moveRooke(int &x1, int &x2, int &y1, int &y2, Team team);
+
+	bool moveHorse(int &x1, int &x2, int &y1, int &y2, Team team);
+
+	bool moveBlackPawn(int &x1, int &x2, int &y1, int &y2, Team team);
+
+	bool moveWhitePawn(int &x1, int &x2, int &y1, int &y2, Team team);
+
+	bool check(ChessPieces *&piece);
+
 private:
-	ChessBoard board[8][8];
+	ChessBoard board[8][8]; // VERY IMPORTANT NOTE!!! : board[y-position][x-position] for entire project
 
 	ChessPieces *blackTeam[16];
 	ChessPieces *whiteTeam[16];
@@ -41,7 +57,7 @@ private:
 	int numWhitePieces;
 };
 
-Game::Game(float width, float height)
+Game::Game(float width, float height) // VERY IMPORTANT NOTE!!! : board[y-position][x-position] for entire project
 {
 	if (!font.loadFromFile("arial.ttf"))
 	{
@@ -233,17 +249,25 @@ void Game::drawGame(sf::RenderWindow &win)
 			win.draw(*whiteTeam[c]);
 	}
 
-
 	win.draw(escapeText);
 
 }
 
-bool Game::checkIfPieceInSpot(sf::Vector2i &f, Team team)
+/*
+		Function: bool checkIfPieceInSpot(sf::Vector2i &f, Team team)
+		Description: This function checks to see if the position the user clicked is a valid chess piece that they can select.
+		Parameters: sf::Vector2i &start, sf::Vector2i &end, Team team
+		Precondition: This function must receive the team that the current user is on, so it can determine if the chess piece selected is
+			a chess piece associated to their team.  It must also receive the pixel position of the object the user is trying to click.
+		Postcondition: Returns true if the user's selected object is a valid chess piece. False if it's not. 
+		Returns: bool value
+*/
+bool Game::checkIfPieceInSpot(sf::Vector2i &f, Team team) 
 {
 	int x = 0, y = 0;
 
-	x = f.x / 81.25;
-	y = f.y / 81.25;
+	x = f.x / 81.25; // Converts x pixels selected to the x index of the board
+	y = f.y / 81.25; // Converts y pixels selected to the y index of the board
 
 	if (board[y][x].getIsOccupied() == true && board[y][x].getChessPiece()->getTeam() == team)
 		return true;
@@ -251,6 +275,17 @@ bool Game::checkIfPieceInSpot(sf::Vector2i &f, Team team)
 		return false;
 }
 
+/*
+		Function: bool tryMovePiece(sf::Vector2i &start, sf::Vector2i &end, Team team)
+		Description: This function can only be executed iff a user has previously selected a valid chess piece and the checkIfPieceInSpot()
+			function returned true. This function trys to move the chess piece selected to the position the user chose.
+		Parameters: sf::Vector2i &start, sf::Vector2i &end, Team team
+		Precondition: This function can only be executed iff a user has previously selected a valid chess piece and the checkIfPieceInSpot()
+			function returned true. Must receive the pixel position of the chess piece the user selected and the pixel position of the box
+			where the user wants to move the chess piece.
+		Postcondition: Returns true if the user could move the chess piece to desired location and false if not.
+		Returns: bool value
+*/
 bool Game::tryMovePiece(sf::Vector2i &start, sf::Vector2i &end, Team team)
 {
 	bool value = false;
@@ -259,185 +294,124 @@ bool Game::tryMovePiece(sf::Vector2i &start, sf::Vector2i &end, Team team)
 
 	int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 
-	x1 = start.x / 81.25;
-	y1 = start.y / 81.25;
-	x2 = end.x / 81.25;
-	y2 = end.y / 81.25;
+	bool inCheck = false;
 
-	if (x1 == x1 && y1 == y2)
+	x1 = start.x / 81.25; // Converts x pixels selected to the x index of the board
+	y1 = start.y / 81.25; // Converts y pixels selected to the y index of the board
+	x2 = end.x / 81.25; // Converts x pixels selected to the x index of the board
+	y2 = end.y / 81.25; // Converts y pixels selected to the y index of the board
+
+	if (x1 == x2 && y1 == y2)
 		return false;
 
 	if (board[y1][x1].getChessPiece()->getType() == 'K')
 	{
-		/*if (x1 == x1 || y1 == y2)
+		if (moveKing(x1, x2, y1, y2, team))
 		{
-			if (board[y2][x2].getIsOccupied())
-			{
-				if (board[y2][x2].getChessPiece()->getTeam() != team)
-				{
-					board[y2][x2].killChessPiece();
-				}
-				else
-					return false;
-			}
-			else
-			{
-				board[y1][x1].getChessPiece()->move(end);
+			inCheck = check(board[y2][x2].getChessPiece());
 
-				board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	if (board[y1][x1].getChessPiece()->getType() == 'Q')
+	{
+		if(moveQueen(x1, x2, y1, y2, team))
+		{
+			inCheck = check(board[y2][x2].getChessPiece());
 
-				board[y1][x1].getChessPiece() = nullptr;
-				
-				return true;
-			}
-		}*/
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	if (board[y1][x1].getChessPiece()->getType() == 'R')
+	{
+		if (moveRooke(x1, x2, y1, y2, team))
+		{
+			inCheck = check(board[y2][x2].getChessPiece());
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	if (board[y1][x1].getChessPiece()->getType() == 'B')
+	{
+		if (moveBishop(x1, x2, y1, y2, team))
+		{
+			inCheck = check(board[y2][x2].getChessPiece());
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	if (board[y1][x1].getChessPiece()->getType() == 'H')
+	{
+		if (moveHorse(x1, x2, y1, y2, team))
+		{
+			inCheck = check(board[y2][x2].getChessPiece());
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	if (board[y1][x1].getChessPiece()->getType() == 'P' && team == WHITE)
 	{	
-		if (y1 > y2 && y2 > y1 - 2)
+		if (moveWhitePawn(x1, x2, y1, y2, team))
 		{
-			if (x1 == x2)
-			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					return false;
-				}
-				else
-				{
-					board[y1][x1].getChessPiece()->move(end);
+			inCheck = check(board[y2][x2].getChessPiece());
 
-					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-					board[y1][x1].getChessPiece() = nullptr;
-
-					value = true;
-					board[y2][x2].setIsOccupied(value);
-
-					value = false;
-					board[y1][x1].setIsOccupied(value);
-
-					return true;
-				}
-			}
-			else if (x1 + 1 == x2 || x1 - 1 == x2)
-			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-						numBlackPieces--;
-
-						board[y2][x2].getChessPiece() = new Pawns(team);
-
-						board[y1][x1].getChessPiece()->move(end);
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-						return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
+			return true;
 		}
 		else
+		{
 			return false;
+		}
 	}
 	if (board[y1][x1].getChessPiece()->getType() == 'P' && team == BLACK)
 	{
-		if (y1 < y2 && y2 < y1 + 2)
+		if (moveBlackPawn(x1, x2, y1, y2, team))
 		{
-			if (x1 == x2)
-			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					return false;
-				}
-				else
-				{
-					board[y1][x1].getChessPiece()->move(end);
+			inCheck = check(board[y2][x2].getChessPiece());
 
-					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-					board[y1][x1].getChessPiece() = nullptr;
-
-					value = true;
-					board[y2][x2].setIsOccupied(value);
-
-					value = false;
-					board[y1][x1].setIsOccupied(value);
-
-					return true;
-				}
-			}
-			else if (x1 + 1 == x2 || x1 - 1 == x2)
-			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-						numWhitePieces--;
-
-						board[y2][x2].getChessPiece() = new Pawns(team);
-
-						board[y1][x1].getChessPiece()->move(end);
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-						return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
+			return true;
 		}
 		else
+		{
 			return false;
+		}
 	}
 
 	return false;
 }
 
+/*
+		Function: void shiftArrayPositions(ChessPieces *arr[], int startIndex, int length)
+		Description: This function is designed to shift an array of chess pieces after a chess piece has been killed.  If a chess piece dies
+			it's memory is deleted, which will cause an error if we try to draw the array of chess pieces to the board again.  So this
+			is designed to shift the array so that there are no gaps in the array.
+		Parameters: ChessPieces *arr[], int startIndex, int length
+		Precondition: Needs the array whose chess piece was killed. Needs the index of the Chess piece that was deleted, so that the shift 
+			down of the array can begin at the index that has no memory.
+		Postcondition: The array has been shifted. After this function is ran the number of chess pieces in this array MUST be reduced by 1.
+			The game class keeps track of the number of chess pieces on each team (in each array). If the number of chess pieces for the
+			array that was passed in is not reduced, the program will have an error when drawing the chess pieces.
+		Returns: none
+*/
 void Game::shiftArrayPositions(ChessPieces *arr[], int startIndex, int length)
 {
 	ChessPieces *pNext = arr[startIndex+1];
@@ -446,6 +420,8 @@ void Game::shiftArrayPositions(ChessPieces *arr[], int startIndex, int length)
 	{
 		if (i == length - 1)
 		{
+			arr[i]->setIndex(i - 1);
+			arr[i - 1] = arr[i];
 			arr[i] = nullptr;
 		}
 		else
@@ -454,4 +430,1493 @@ void Game::shiftArrayPositions(ChessPieces *arr[], int startIndex, int length)
 			arr[i - 1] = arr[i];
 		}
 	}
+}
+
+/*
+		Function: bool moveKing(int &x1, int &x2, int &y1, int &y2, Team team)
+		Description: This function moves the king from its orignal x and y coordinates to its new x and y coordinates determined by
+			mouse clicks.  This function contains a series of checks that are exclusive to a king, which check if the position it wants to
+			go to is occupied, if the user is trying to kill an opponent's chess piece, if there are any pieces between the king and the
+			position it wants to move to, and if the user is not clicking a position the King piece simply cannot reach.
+		Parameters: int &x1, int &x2, int &y1, int &y2, Team team
+		Precondition: This function will only run if the user clicked a valid chess piece to move, that is, if the user clicked one of their
+			remaining chess pieces on the board, the one that corresponds to their team. The function will pass in the original x and y
+			position of the chess piece with respect to the Chess Board's indexes and will pass in the position the user wants to move
+			the chess piece too.  The function must also take in the team the current user is on, to determine kill moves.
+		Postcondition: Returns true if the king was able to move to the position which the user wanted to move to, and false if the king
+			could not move to the user's desired position
+		Returns: bool value
+	*/
+bool Game::moveKing(int &x1, int &x2, int &y1, int &y2, Team team)
+{
+	bool value = false;
+
+	int deletedIndex = 0;
+
+	if ((x1 - 1 == x2 && y1 == y2) || (x1 + 1 == x2 && y1 == y2) || (x1 == x2 && y1 + 1 == y2) || (x1 == x2 && y1 - 1 == y2) || (x1 + 1 == x2 && y1 == y2) || (x1 - 1 == x2 && y1 == y2) || (x1 + 1 == x2 && y1 + 1 == y2) || (x1 - 1 == x2 && y1 + 1 == y2) || (x1 - 1 == x2 && y1 - 1 == y2) || (x1 + 1 == x2 && y1 - 1 == y2))
+	{
+		if (board[y2][x2].getIsOccupied())
+		{
+			if (board[y2][x2].getChessPiece()->getTeam() != team)
+			{
+				deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+				board[y2][x2].killChessPiece();
+
+				if (team == WHITE)
+				{
+					shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+					numBlackPieces--;
+				}
+				else
+				{
+					shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+					numWhitePieces--;
+				}
+
+				board[y2][x2].getChessPiece() = new Kings(team);
+
+				board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+				board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+				board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+				board[y1][x1].getChessPiece() = nullptr;
+
+				value = true;
+				board[y2][x2].setIsOccupied(value);
+
+				value = false;
+				board[y1][x1].setIsOccupied(value);
+
+				return true;
+			}
+			else
+				return false;
+		}
+		else
+		{
+			board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+			board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+			board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+			board[y1][x1].getChessPiece() = nullptr;
+
+			value = true;
+			board[y2][x2].setIsOccupied(value);
+
+			value = false;
+			board[y1][x1].setIsOccupied(value);
+
+			return true;
+		}
+	}
+}
+
+/*
+		Function: bool moveQueen(int &x1, int &x2, int &y1, int &y2, Team team)
+		Description: This function moves the Queen from its orignal x and y coordinates to its new x and y coordinates determined by
+			mouse clicks.  This function contains a series of checks that are exclusive to a Queen, which check if the position it wants to
+			go to is occupied, if the user is trying to kill an opponent's chess piece, if there are any pieces between the Queen and the
+			position it wants to move to, and if the user is not clicking a position the Queen piece simply cannot reach.
+		Parameters: int &x1, int &x2, int &y1, int &y2, Team team
+		Precondition: This function will only run if the user clicked a valid chess piece to move, that is, if the user clicked one of their
+			remaining chess pieces on the board, the one that corresponds to their team. The function will pass in the original x and y
+			position of the chess piece with respect to the Chess Board's indexes and will pass in the position the user wants to move
+			the chess piece too.  The function must also take in the team the current user is on, to determine kill moves.
+		Postcondition: Returns true if the Queen was able to move to the position which the user wanted to move to, and false if the Queen
+			could not move to the user's desired position
+		Returns: bool value
+	*/
+bool Game::moveQueen(int &x1, int &x2, int &y1, int &y2, Team team)
+{
+	int tempX = x1;
+	int tempY = y1;
+
+	bool value = false;
+	bool blockedPath = false;
+
+	int deletedIndex = 0;
+
+	if (y2 > y1 && x2 > x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 + i][x1 + i].getIsOccupied() && y1 + i == y2 && x1 + i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Queens(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 + i][x1 + i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+
+		}
+		else
+			return false;
+
+	}
+	else if (y2 > y1 && x2 < x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1) )
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 + i][x1 - i].getIsOccupied() && y1 + i == y2 && x1 - i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Queens(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 + i][x1 - i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+			return false;
+
+		return true;
+	}
+	else if (y2 < y1 && x2 < x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 - i][x1 - i].getIsOccupied() && y1 - i == y2 && x1 - i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Queens(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 - i][x1 - i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+			return false;
+	}
+	else if (y2 < y1 && x2 > x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 - i][x1 + i].getIsOccupied() && y1 - i == y2 && x1 + i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Queens(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 - i][x1 + i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+			return false;
+	}
+	else if (x2 > x1)
+	{
+		for (int i = 1; i <= abs(x2 - x1); i++)
+		{
+			if (board[y1][x1 + i].getIsOccupied() && y1 == y2 && x1 + i == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Queens(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1][x1+i].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (x2 < x1)
+	{
+		for (int i = 1; i <= abs(x2 - x1); i++)
+		{
+			if (board[y1][x1 - i].getIsOccupied() && y1 == y2 && x1 - i == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Queens(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1][x1-i].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (y2 < y1)
+	{
+		for (int i = 1; i <= abs(y2 - y1); i++)
+		{
+			if (board[y1 - i][x1].getIsOccupied() && y1 - i == y2 && x1 == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Queens(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1 - i][x1].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (y2 > y1)
+	{
+		for (int i = 1; i <= abs(y2 - y1); i++)
+		{
+			if (board[y1 + i][x1].getIsOccupied() && y1 + i == y2 && x1 == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Queens(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1 + i][x1].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else
+	{
+		return false;
+	}
+
+	board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+	board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+	board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+	board[y1][x1].getChessPiece() = nullptr;
+
+	value = true;
+	board[y2][x2].setIsOccupied(value);
+
+	value = false;
+	board[y1][x1].setIsOccupied(value);
+
+	return true;
+}
+
+/*
+		Function: bool moveBishop(int &x1, int &x2, int &y1, int &y2, Team team)
+		Description: This function moves the Bishop from its orignal x and y coordinates to its new x and y coordinates determined by
+			mouse clicks.  This function contains a series of checks that are exclusive to a Bishop, which check if the position it wants to
+			go to is occupied, if the user is trying to kill an opponent's chess piece, if there are any pieces between the Bishop and the
+			position it wants to move to, and if the user is not clicking a position the Bishop piece simply cannot reach.
+		Parameters: int &x1, int &x2, int &y1, int &y2, Team team
+		Precondition: This function will only run if the user clicked a valid chess piece to move, that is, if the user clicked one of their
+			remaining chess pieces on the board, the one that corresponds to their team. The function will pass in the original x and y
+			position of the chess piece with respect to the Chess Board's indexes and will pass in the position the user wants to move
+			the chess piece too.  The function must also take in the team the current user is on, to determine kill moves.
+		Postcondition: Returns true if the Bishop was able to move to the position which the user wanted to move to, and false if the Bishop
+			could not move to the user's desired position
+		Returns: bool value
+	*/
+bool Game::moveBishop(int &x1, int &x2, int &y1, int &y2, Team team)
+{
+	int tempX = x1;
+	int tempY = y1;
+
+	bool value = false;
+	bool blockedPath = false;
+
+	int deletedIndex = 0;
+
+	if (y2 > y1 && x2 > x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 + i][x1 + i].getIsOccupied() && y1 + i == y2 && x1 + i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Bishops(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 + i][x1 + i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+
+		}
+		else
+			return false;
+
+	}
+	else if (y2 > y1 && x2 < x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 + i][x1 - i].getIsOccupied() && y1 + i == y2 && x1 - i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Bishops(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 + i][x1 - i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+			return false;
+
+		return true;
+	}
+	else if (y2 < y1 && x2 < x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 - i][x1 - i].getIsOccupied() && y1 - i == y2 && x1 - i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Bishops(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 - i][x1 - i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+			return false;
+	}
+	else if (y2 < y1 && x2 > x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 - i][x1 + i].getIsOccupied() && y1 - i == y2 && x1 + i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Bishops(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 - i][x1 + i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+			return false;
+	}
+	else
+	{
+		return false;
+	}
+
+	board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+	board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+	board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+	board[y1][x1].getChessPiece() = nullptr;
+
+	value = true;
+	board[y2][x2].setIsOccupied(value);
+
+	value = false;
+	board[y1][x1].setIsOccupied(value);
+
+	return true;
+}
+
+/*
+		Function: bool moveRooke(int &x1, int &x2, int &y1, int &y2, Team team)
+		Description: This function moves the Rooke from its orignal x and y coordinates to its new x and y coordinates determined by
+			mouse clicks.  This function contains a series of checks that are exclusive to a Rooke, which check if the position it wants to
+			go to is occupied, if the user is trying to kill an opponent's chess piece, if there are any pieces between the Rooke and the
+			position it wants to move to, and if the user is not clicking a position the Rooke piece simply cannot reach.
+		Parameters: int &x1, int &x2, int &y1, int &y2, Team team
+		Precondition: This function will only run if the user clicked a valid chess piece to move, that is, if the user clicked one of their
+			remaining chess pieces on the board, the one that corresponds to their team. The function will pass in the original x and y
+			position of the chess piece with respect to the Chess Board's indexes and will pass in the position the user wants to move
+			the chess piece too.  The function must also take in the team the current user is on, to determine kill moves.
+		Postcondition: Returns true if the Rooke was able to move to the position which the user wanted to move to, and false if the Rooke
+			could not move to the user's desired position
+		Returns: bool value
+	*/
+bool Game::moveRooke(int &x1, int &x2, int &y1, int &y2, Team team)
+{
+	int tempX = x1;
+	int tempY = y1;
+
+	bool value = false;
+	bool blockedPath = false;
+
+	int deletedIndex = 0;
+
+	if (x2 > x1 && y1 == y2)
+	{
+		for (int i = 1; i <= abs(x2 - x1); i++)
+		{
+			if (board[y1][x1 + i].getIsOccupied() && y1 == y2 && x1 + i == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Rookes(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1][x1 + i].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (x2 < x1 && y1 == y2)
+	{
+		for (int i = 1; i <= abs(x2 - x1); i++)
+		{
+			if (board[y1][x1 - i].getIsOccupied() && y1 == y2 && x1 - i == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Rookes(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1][x1 - i].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (x2 == x1 && y2 < y1)
+	{
+		for (int i = 1; i <= abs(y2 - y1); i++)
+		{
+			if (board[y1 - i][x1].getIsOccupied() && y1 - i == y2 && x1 == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Rookes(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1 - i][x1].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (x2 == x1 && y2 > y1)
+	{
+		for (int i = 1; i <= abs(y2 - y1); i++)
+		{
+			if (board[y1 + i][x1].getIsOccupied() && y1 + i == y2 && x1 == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Rookes(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{ 
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1 + i][x1].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else
+	{
+		return false;
+	}
+
+	board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+	board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+	board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+	board[y1][x1].getChessPiece() = nullptr;
+
+	value = true;
+	board[y2][x2].setIsOccupied(value);
+
+	value = false;
+	board[y1][x1].setIsOccupied(value);
+
+	return true;
+}
+
+/*
+		Function: bool moveHorse(int &x1, int &x2, int &y1, int &y2, Team team)
+		Description: This function moves the Horse from its orignal x and y coordinates to its new x and y coordinates determined by
+			mouse clicks.  This function contains a series of checks that are exclusive to a Horse, which check if the position it wants to
+			go to is occupied, if the user is trying to kill an opponent's chess piece, if there are any pieces between the Horse and the
+			position it wants to move to, and if the user is not clicking a position the Horse piece simply cannot reach.
+		Parameters: int &x1, int &x2, int &y1, int &y2, Team team
+		Precondition: This function will only run if the user clicked a valid chess piece to move, that is, if the user clicked one of their
+			remaining chess pieces on the board, the one that corresponds to their team. The function will pass in the original x and y
+			position of the chess piece with respect to the Chess Board's indexes and will pass in the position the user wants to move
+			the chess piece too.  The function must also take in the team the current user is on, to determine kill moves.
+		Postcondition: Returns true if the Horse was able to move to the position which the user wanted to move to, and false if the Horse
+			could not move to the user's desired position.
+		Returns: bool value
+*/
+bool Game::moveHorse(int &x1, int &x2, int &y1, int &y2, Team team)
+{
+	int tempX = x1;
+	int tempY = y1;
+
+	bool value = false;
+	bool blockedPath = false;
+
+	int deletedIndex = 0;
+
+	if ((x1 + 1 == x2 && y1 + 2 == y2) || (x1 - 1 == x2 && y1 + 2 == y2) || (x1 - 1 == x2 && y1 - 2 == y2) || (x1 + 1 == x2 && y1 - 2 == y2) || (x1 + 2 == x2 && y1 - 1 == y2) || (x1 + 2 == x2 && y1 + 1 == y2) || (x1 - 2 == x2 && y1 - 1 == y2) || (x1 - 2 == x2 && y1 + 1 == y2))
+	{
+		if (board[y2][x2].getIsOccupied())
+		{
+			if (board[y2][x2].getChessPiece()->getTeam() != team)
+			{
+				deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+				board[y2][x2].killChessPiece();
+
+				if (team == WHITE)
+				{
+					shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+					numBlackPieces--;
+				}
+				else
+				{
+					shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+					numWhitePieces--;
+				}
+
+				board[y2][x2].getChessPiece() = new Horses(team);
+
+				board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+				board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+				board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+				board[y1][x1].getChessPiece() = nullptr;
+
+				value = true;
+				board[y2][x2].setIsOccupied(value);
+
+				value = false;
+				board[y1][x1].setIsOccupied(value);
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+			board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+			board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+			board[y1][x1].getChessPiece() = nullptr;
+
+			value = true;
+			board[y2][x2].setIsOccupied(value);
+
+			value = false;
+			board[y1][x1].setIsOccupied(value);
+
+			return true;
+		}
+	}
+	else
+		return false;
+}
+
+
+/*
+		Function: bool moveBlackPawn(int &x1, int &x2, int &y1, int &y2, Team team)
+		Description: This function moves the Pawn from its orignal x and y coordinates to its new x and y coordinates determined by
+			mouse clicks.  This function contains a series of checks that are exclusive to a Pawn, which check if the position it wants to
+			go to is occupied, if the user is trying to kill an opponent's chess piece, if there are any pieces between the Pawn and the
+			position it wants to move to, and if the user is not clicking a position the Pawn piece simply cannot reach.
+		Parameters: int &x1, int &x2, int &y1, int &y2, Team team
+		Precondition: This function will only run if the user clicked a valid chess piece to move, that is, if the user clicked one of their
+			remaining chess pieces on the board, the one that corresponds to their team. The function will pass in the original x and y
+			position of the chess piece with respect to the Chess Board's indexes and will pass in the position the user wants to move
+			the chess piece too.  The function must also take in the team the current user is on, to determine kill moves.  Current Pawn
+			must be black.
+		Postcondition: Returns true if the Pawn was able to move to the position which the user wanted to move to, and false if the Pawn
+			could not move to the user's desired position
+		Returns: bool value
+	*/
+bool Game::moveBlackPawn(int &x1, int &x2, int &y1, int &y2, Team team)
+{
+	bool value = false;
+
+	int deletedIndex = 0;
+
+	if (y1 < y2 && y2 < y1 + 2)
+	{
+		if (x1 == x2)
+		{
+			if (board[y2][x2].getIsOccupied())
+			{
+				return false;
+			}
+			else
+			{
+				board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+				board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+				board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+				board[y1][x1].getChessPiece() = nullptr;
+
+				value = true;
+				board[y2][x2].setIsOccupied(value);
+
+				value = false;
+				board[y1][x1].setIsOccupied(value);
+
+				return true;
+			}
+		}
+		else if (x1 + 1 == x2 || x1 - 1 == x2)
+		{
+			if (board[y2][x2].getIsOccupied())
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+					numWhitePieces--;
+
+					board[y2][x2].getChessPiece() = new Pawns(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+					return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+		return false;
+}
+
+/*
+		Function: bool moveWhitePawn(int &x1, int &x2, int &y1, int &y2, Team team)
+		Description: This function moves the Pawn from its orignal x and y coordinates to its new x and y coordinates determined by
+			mouse clicks.  This function contains a series of checks that are exclusive to a Pawn, which check if the position it wants to
+			go to is occupied, if the user is trying to kill an opponent's chess piece, if there are any pieces between the Pawn and the
+			position it wants to move to, and if the user is not clicking a position the Pawn piece simply cannot reach.
+		Parameters: int &x1, int &x2, int &y1, int &y2, Team team
+		Precondition: This function will only run if the user clicked a valid chess piece to move, that is, if the user clicked one of their
+			remaining chess pieces on the board, the one that corresponds to their team. The function will pass in the original x and y
+			position of the chess piece with respect to the Chess Board's indexes and will pass in the position the user wants to move
+			the chess piece too.  The function must also take in the team the current user is on, to determine kill moves.  Current Pawn
+			must be white.
+		Postcondition: Returns true if the Pawn was able to move to the position which the user wanted to move to, and false if the Pawn
+			could not move to the user's desired position
+		Returns: bool value
+	*/
+bool Game::moveWhitePawn(int &x1, int &x2, int &y1, int &y2, Team team)
+{
+	bool value = false;
+
+	int deletedIndex = 0;
+
+	if (y1 > y2 && y2 > y1 - 2)
+	{
+		if (x1 == x2)
+		{
+			if (board[y2][x2].getIsOccupied())
+			{
+				return false;
+			}
+			else
+			{
+				board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+				board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+				board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+				board[y1][x1].getChessPiece() = nullptr;
+
+				value = true;
+				board[y2][x2].setIsOccupied(value);
+
+				value = false;
+				board[y1][x1].setIsOccupied(value);
+
+				return true;
+			}
+		}
+		else if (x1 + 1 == x2 || x1 - 1 == x2)
+		{
+			if (board[y2][x2].getIsOccupied())
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+					numBlackPieces--;
+
+					board[y2][x2].getChessPiece() = new Pawns(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+					return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+		return false;
+}
+
+bool Game::check(ChessPieces *&piece)
+{
+	if (piece->getType() == 'K')
+	{
+
+	}
+	if (piece->getType() == 'Q')
+	{
+
+	}
+	if (piece->getType() == 'R')
+	{
+
+	}
+	if (piece->getType() == 'B')
+	{
+
+	}
+	if (piece->getType() == 'H')
+	{
+
+	}
+	if (piece->getType() == 'P' && piece->getTeam() == WHITE)
+	{
+		if (board[piece->getY() - 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getType() == 'K' ) && board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if(board[piece->getY() - 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+	if (piece->getType() == 'P' && piece->getTeam() == BLACK)
+	{
+		if (board[piece->getY() + 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getType() == 'K' ) && board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if(board[piece->getY() + 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return false;
 }

@@ -2,6 +2,7 @@
 
 #include <SFML\Graphics.hpp>
 #include <iostream>
+#include <cmath>
 
 using std::cout;
 using std::endl;
@@ -42,14 +43,15 @@ public:
 
 protected:
 	int x; // Position on row of chess board
-	int y; // Position on column of chess boar
-	int arrayIndex;
+	int y; // Position on column of chess board
+	int arrayIndex; // Stores the Chess Piece's index from the array it is stored in, very important for
+	// deleting/killing off chess pieces.
 
-	char type;
+	char type; // Stores what type of chess piece it is. For example, 'K' is for King.
 
-	Team t;
+	Team t; // Stores what team the chess piece is on.
 
-	sf::Texture tex;
+	sf::Texture tex; // Stores the texture of the chess piece
 };
 
 ChessPieces::ChessPieces()

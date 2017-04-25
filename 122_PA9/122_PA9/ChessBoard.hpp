@@ -14,15 +14,13 @@ public:
 
 	void setChessPiece(ChessPieces *&piece);
 
-	ChessPieces *& getChessPiece();
+	ChessPieces *& getChessPiece();  // Must return a pointer to a reference of the chess piece. Do not change.
 
 	bool killChessPiece();
 protected:
 	bool spaceIsOccupied;
 
-	ChessPieces *piece;
-	int team; // representation of which teams piece is on the space
-	char pieceType;
+	ChessPieces *piece; // Stores the chess piece that is currently located at the current chess board piece
 };
 
 ChessBoard::ChessBoard()
@@ -60,7 +58,7 @@ void ChessBoard::setChessPiece(ChessPieces *&piece)
 	this->piece = piece;
 }
 
-ChessPieces *& ChessBoard::getChessPiece() 
+ChessPieces *& ChessBoard::getChessPiece()  // Must return a pointer to a reference of the chess piece. Do not change.
 {
 	return piece;
 }
