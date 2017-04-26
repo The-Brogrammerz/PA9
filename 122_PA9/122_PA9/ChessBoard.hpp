@@ -82,11 +82,13 @@ bool ChessBoard::killChessPiece()
 	switch (piece->getTeam())
 	{
 	case BLACK:
-		std::cout << "White side wins!";
+		std::cout << "White side wins!" << endl;
 		break;
 	case WHITE:
-		std::cout << "Black side wins!";
+		std::cout << "Black side wins!" << endl;
+
 		break;
 	}
 	exit(EXIT_SUCCESS);
+	return true;
 }

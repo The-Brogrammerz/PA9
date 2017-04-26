@@ -17,8 +17,9 @@
 int main()
 {
 
-	//Courtest of SFML tutorial and CodingMadeEasy.com/Socket-usage
-	//TCP SOCKET//
+	/// NETWORKING SEGMENT
+	/// -ZEID
+	/***************************************************/
 	/// Must establish a connection in order for it to work, does not accomadate for some data being lost //
 
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();

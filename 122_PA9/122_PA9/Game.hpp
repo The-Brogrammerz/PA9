@@ -103,7 +103,8 @@ Game::Game(float width, float height) // VERY IMPORTANT NOTE!!! : board[y-positi
 			{
 				value = true;
 				board[r][c].setIsOccupied(value);
-				if (r == 1 || r == 6) {
+				if (r == 1 || r == 6) 
+				{
 					board[r][c].setIsSpecialMoveValid(value);
 				}
 			}
@@ -111,6 +112,7 @@ Game::Game(float width, float height) // VERY IMPORTANT NOTE!!! : board[y-positi
 			{
 				value = false;
 				board[r][c].setIsOccupied(value);
+				board[r][c].setIsSpecialMoveValid(value);
 			}
 		}
 	}
@@ -454,7 +456,7 @@ bool Game::moveKing(int &x1, int &x2, int &y1, int &y2, Team team)
 	bool value = false;
 
 	int deletedIndex = 0;
-	
+
 	if ((x1 - 1 == x2 && y1 == y2) || (x1 + 1 == x2 && y1 == y2) || (x1 == x2 && y1 + 1 == y2) || (x1 == x2 && y1 - 1 == y2) || (x1 + 1 == x2 && y1 == y2) || (x1 - 1 == x2 && y1 == y2) || (x1 + 1 == x2 && y1 + 1 == y2) || (x1 - 1 == x2 && y1 + 1 == y2) || (x1 - 1 == x2 && y1 - 1 == y2) || (x1 + 1 == x2 && y1 - 1 == y2))
 	{
 		if (board[y2][x2].getIsOccupied())
@@ -542,369 +544,75 @@ bool Game::moveQueen(int &x1, int &x2, int &y1, int &y2, Team team)
 
 	int deletedIndex = 0;
 
-	if (board[y2][x2].getIsOccupied() && board[y2][x2].getChessPiece()->getType() == 'K') {
-		return false;
+	if (y2 > y1 && x2 > x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 + i][x1 + i].getIsOccupied() && y1 + i == y2 && x1 + i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Queens(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 + i][x1 + i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+
+		}
+		else
+			return false;
+
 	}
-	else {
-		if (y2 > y1 && x2 > x1)
-		{
-			if (abs(y2 - y1) == abs(x2 - x1))
-			{
-				for (int i = 1; i <= abs(y2 - y1); i++)
-				{
-					if (board[y1 + i][x1 + i].getIsOccupied() && y1 + i == y2 && x1 + i == x2)
-					{
-						if (board[y2][x2].getChessPiece()->getTeam() != team)
-						{
-							deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-							board[y2][x2].killChessPiece();
-
-							if (team == WHITE)
-							{
-								shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-								numBlackPieces--;
-							}
-							else
-							{
-								shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-								numWhitePieces--;
-							}
-
-							board[y2][x2].getChessPiece() = new Queens(team);
-
-							board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-							board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-							board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-							board[y1][x1].getChessPiece() = nullptr;
-
-							value = true;
-							board[y2][x2].setIsOccupied(value);
-
-							value = false;
-							board[y1][x1].setIsOccupied(value);
-
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-
-					}
-					else
-					{
-						if (board[y1 + i][x1 + i].getIsOccupied())
-						{
-							return false;
-						}
-					}
-				}
-
-			}
-			else
-				return false;
-
-		}
-		else if (y2 > y1 && x2 < x1)
-		{
-			if (abs(y2 - y1) == abs(x2 - x1))
-			{
-				for (int i = 1; i <= abs(y2 - y1); i++)
-				{
-					if (board[y1 + i][x1 - i].getIsOccupied() && y1 + i == y2 && x1 - i == x2)
-					{
-						if (board[y2][x2].getChessPiece()->getTeam() != team)
-						{
-							deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-							board[y2][x2].killChessPiece();
-
-							if (team == WHITE)
-							{
-								shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-								numBlackPieces--;
-							}
-							else
-							{
-								shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-								numWhitePieces--;
-							}
-
-							board[y2][x2].getChessPiece() = new Queens(team);
-
-							board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-							board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-							board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-							board[y1][x1].getChessPiece() = nullptr;
-
-							value = true;
-							board[y2][x2].setIsOccupied(value);
-
-							value = false;
-							board[y1][x1].setIsOccupied(value);
-
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-
-					}
-					else
-					{
-						if (board[y1 + i][x1 - i].getIsOccupied())
-						{
-							return false;
-						}
-					}
-				}
-			}
-			else
-				return false;
-
-			return true;
-		}
-		else if (y2 < y1 && x2 < x1)
-		{
-			if (abs(y2 - y1) == abs(x2 - x1))
-			{
-				for (int i = 1; i <= abs(y2 - y1); i++)
-				{
-					if (board[y1 - i][x1 - i].getIsOccupied() && y1 - i == y2 && x1 - i == x2)
-					{
-						if (board[y2][x2].getChessPiece()->getTeam() != team)
-						{
-							deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-							board[y2][x2].killChessPiece();
-
-							if (team == WHITE)
-							{
-								shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-								numBlackPieces--;
-							}
-							else
-							{
-								shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-								numWhitePieces--;
-							}
-
-							board[y2][x2].getChessPiece() = new Queens(team);
-
-							board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-							board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-							board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-							board[y1][x1].getChessPiece() = nullptr;
-
-							value = true;
-							board[y2][x2].setIsOccupied(value);
-
-							value = false;
-							board[y1][x1].setIsOccupied(value);
-
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-
-					}
-					else
-					{
-						if (board[y1 - i][x1 - i].getIsOccupied())
-						{
-							return false;
-						}
-					}
-				}
-			}
-			else
-				return false;
-		}
-		else if (y2 < y1 && x2 > x1)
-		{
-			if (abs(y2 - y1) == abs(x2 - x1))
-			{
-				for (int i = 1; i <= abs(y2 - y1); i++)
-				{
-					if (board[y1 - i][x1 + i].getIsOccupied() && y1 - i == y2 && x1 + i == x2)
-					{
-						if (board[y2][x2].getChessPiece()->getTeam() != team)
-						{
-							deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-							board[y2][x2].killChessPiece();
-
-							if (team == WHITE)
-							{
-								shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-								numBlackPieces--;
-							}
-							else
-							{
-								shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-								numWhitePieces--;
-							}
-
-							board[y2][x2].getChessPiece() = new Queens(team);
-
-							board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-							board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-							board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-							board[y1][x1].getChessPiece() = nullptr;
-
-							value = true;
-							board[y2][x2].setIsOccupied(value);
-
-							value = false;
-							board[y1][x1].setIsOccupied(value);
-
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-
-					}
-					else
-					{
-						if (board[y1 - i][x1 + i].getIsOccupied())
-						{
-							return false;
-						}
-					}
-				}
-			}
-			else
-				return false;
-		}
-		else if (x2 > x1)
-		{
-			for (int i = 1; i <= abs(x2 - x1); i++)
-			{
-				if (board[y1][x1 + i].getIsOccupied() && y1 == y2 && x1 + i == x2)
-				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						if (team == WHITE)
-						{
-							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-							numBlackPieces--;
-						}
-						else
-						{
-							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-							numWhitePieces--;
-						}
-
-						board[y2][x2].getChessPiece() = new Queens(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-
-				}
-				else
-				{
-					if (board[y1][x1 + i].getIsOccupied())
-					{
-						return false;
-					}
-				}
-			}
-		}
-		else if (x2 < x1)
-		{
-			for (int i = 1; i <= abs(x2 - x1); i++)
-			{
-				if (board[y1][x1 - i].getIsOccupied() && y1 == y2 && x1 - i == x2)
-				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						if (team == WHITE)
-						{
-							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-							numBlackPieces--;
-						}
-						else
-						{
-							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-							numWhitePieces--;
-						}
-
-						board[y2][x2].getChessPiece() = new Queens(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-
-				}
-				else
-				{
-					if (board[y1][x1 - i].getIsOccupied())
-					{
-						return false;
-					}
-				}
-			}
-		}
-		else if (y2 < y1)
+	else if (y2 > y1 && x2 < x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
 		{
 			for (int i = 1; i <= abs(y2 - y1); i++)
 			{
-				if (board[y1 - i][x1].getIsOccupied() && y1 - i == y2 && x1 == x2)
+				if (board[y1 + i][x1 - i].getIsOccupied() && y1 + i == y2 && x1 - i == x2)
 				{
 					if (board[y2][x2].getChessPiece()->getTeam() != team)
 					{
@@ -948,62 +656,7 @@ bool Game::moveQueen(int &x1, int &x2, int &y1, int &y2, Team team)
 				}
 				else
 				{
-					if (board[y1 - i][x1].getIsOccupied())
-					{
-						return false;
-					}
-				}
-			}
-		}
-		else if (y2 > y1)
-		{
-			for (int i = 1; i <= abs(y2 - y1); i++)
-			{
-				if (board[y1 + i][x1].getIsOccupied() && y1 + i == y2 && x1 == x2)
-				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						if (team == WHITE)
-						{
-							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-							numBlackPieces--;
-						}
-						else
-						{
-							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-							numWhitePieces--;
-						}
-
-						board[y2][x2].getChessPiece() = new Queens(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-
-				}
-				else
-				{
-					if (board[y1 + i][x1].getIsOccupied())
+					if (board[y1 + i][x1 - i].getIsOccupied())
 					{
 						return false;
 					}
@@ -1011,9 +664,351 @@ bool Game::moveQueen(int &x1, int &x2, int &y1, int &y2, Team team)
 			}
 		}
 		else
-		{
 			return false;
+	}
+	else if (y2 < y1 && x2 < x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 - i][x1 - i].getIsOccupied() && y1 - i == y2 && x1 - i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Queens(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 - i][x1 - i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
 		}
+		else
+			return false;
+	}
+	else if (y2 < y1 && x2 > x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 - i][x1 + i].getIsOccupied() && y1 - i == y2 && x1 + i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Queens(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 - i][x1 + i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+			return false;
+	}
+	else if (x2 > x1)
+	{
+		for (int i = 1; i <= abs(x2 - x1); i++)
+		{
+			if (board[y1][x1 + i].getIsOccupied() && y1 == y2 && x1 + i == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Queens(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1][x1+i].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (x2 < x1)
+	{
+		for (int i = 1; i <= abs(x2 - x1); i++)
+		{
+			if (board[y1][x1 - i].getIsOccupied() && y1 == y2 && x1 - i == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Queens(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1][x1-i].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (y2 < y1)
+	{
+		for (int i = 1; i <= abs(y2 - y1); i++)
+		{
+			if (board[y1 - i][x1].getIsOccupied() && y1 - i == y2 && x1 == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Queens(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1 - i][x1].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (y2 > y1)
+	{
+		for (int i = 1; i <= abs(y2 - y1); i++)
+		{
+			if (board[y1 + i][x1].getIsOccupied() && y1 + i == y2 && x1 == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Queens(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1 + i][x1].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else
+	{
+		return false;
 	}
 
 	board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
@@ -1058,258 +1053,251 @@ bool Game::moveBishop(int &x1, int &x2, int &y1, int &y2, Team team)
 
 	int deletedIndex = 0;
 
-	if (board[y2][x2].getIsOccupied() && board[y2][x2].getChessPiece()->getType() == 'K') {
-		return false;
-	}
-	else {
-		if (y2 > y1 && x2 > x1)
+	if (y2 > y1 && x2 > x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
 		{
-			if (abs(y2 - y1) == abs(x2 - x1))
+			for (int i = 1; i <= abs(y2 - y1); i++)
 			{
-				for (int i = 1; i <= abs(y2 - y1); i++)
+				if (board[y1 + i][x1 + i].getIsOccupied() && y1 + i == y2 && x1 + i == x2)
 				{
-					if (board[y1 + i][x1 + i].getIsOccupied() && y1 + i == y2 && x1 + i == x2)
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
 					{
-						if (board[y2][x2].getChessPiece()->getTeam() != team)
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
 						{
-							deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-							board[y2][x2].killChessPiece();
-
-							if (team == WHITE)
-							{
-								shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-								numBlackPieces--;
-							}
-							else
-							{
-								shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-								numWhitePieces--;
-							}
-
-							board[y2][x2].getChessPiece() = new Bishops(team);
-
-							board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-							board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-							board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-							board[y1][x1].getChessPiece() = nullptr;
-
-							value = true;
-							board[y2][x2].setIsOccupied(value);
-
-							value = false;
-							board[y1][x1].setIsOccupied(value);
-
-							return true;
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
 						}
 						else
 						{
-							return false;
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
 						}
 
+						board[y2][x2].getChessPiece() = new Bishops(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
 					}
 					else
 					{
-						if (board[y1 + i][x1 + i].getIsOccupied())
-						{
-							return false;
-						}
+						return false;
 					}
+
 				}
-
-			}
-			else
-				return false;
-
-		}
-		else if (y2 > y1 && x2 < x1)
-		{
-			if (abs(y2 - y1) == abs(x2 - x1))
-			{
-				for (int i = 1; i <= abs(y2 - y1); i++)
+				else
 				{
-					if (board[y1 + i][x1 - i].getIsOccupied() && y1 + i == y2 && x1 - i == x2)
+					if (board[y1 + i][x1 + i].getIsOccupied())
 					{
-						if (board[y2][x2].getChessPiece()->getTeam() != team)
-						{
-							deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-							board[y2][x2].killChessPiece();
-
-							if (team == WHITE)
-							{
-								shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-								numBlackPieces--;
-							}
-							else
-							{
-								shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-								numWhitePieces--;
-							}
-
-							board[y2][x2].getChessPiece() = new Bishops(team);
-
-							board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-							board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-							board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-							board[y1][x1].getChessPiece() = nullptr;
-
-							value = true;
-							board[y2][x2].setIsOccupied(value);
-
-							value = false;
-							board[y1][x1].setIsOccupied(value);
-
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-
-					}
-					else
-					{
-						if (board[y1 + i][x1 - i].getIsOccupied())
-						{
-							return false;
-						}
+						return false;
 					}
 				}
 			}
-			else
-				return false;
 
-			return true;
-		}
-		else if (y2 < y1 && x2 < x1)
-		{
-			if (abs(y2 - y1) == abs(x2 - x1))
-			{
-				for (int i = 1; i <= abs(y2 - y1); i++)
-				{
-					if (board[y1 - i][x1 - i].getIsOccupied() && y1 - i == y2 && x1 - i == x2)
-					{
-						if (board[y2][x2].getChessPiece()->getTeam() != team)
-						{
-							deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-							board[y2][x2].killChessPiece();
-
-							if (team == WHITE)
-							{
-								shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-								numBlackPieces--;
-							}
-							else
-							{
-								shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-								numWhitePieces--;
-							}
-
-							board[y2][x2].getChessPiece() = new Bishops(team);
-
-							board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-							board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-							board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-							board[y1][x1].getChessPiece() = nullptr;
-
-							value = true;
-							board[y2][x2].setIsOccupied(value);
-
-							value = false;
-							board[y1][x1].setIsOccupied(value);
-
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-
-					}
-					else
-					{
-						if (board[y1 - i][x1 - i].getIsOccupied())
-						{
-							return false;
-						}
-					}
-				}
-			}
-			else
-				return false;
-		}
-		else if (y2 < y1 && x2 > x1)
-		{
-			if (abs(y2 - y1) == abs(x2 - x1))
-			{
-				for (int i = 1; i <= abs(y2 - y1); i++)
-				{
-					if (board[y1 - i][x1 + i].getIsOccupied() && y1 - i == y2 && x1 + i == x2)
-					{
-						if (board[y2][x2].getChessPiece()->getTeam() != team)
-						{
-							deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-							board[y2][x2].killChessPiece();
-
-							if (team == WHITE)
-							{
-								shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-								numBlackPieces--;
-							}
-							else
-							{
-								shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-								numWhitePieces--;
-							}
-
-							board[y2][x2].getChessPiece() = new Bishops(team);
-
-							board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-							board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-							board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-							board[y1][x1].getChessPiece() = nullptr;
-
-							value = true;
-							board[y2][x2].setIsOccupied(value);
-
-							value = false;
-							board[y1][x1].setIsOccupied(value);
-
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-
-					}
-					else
-					{
-						if (board[y1 - i][x1 + i].getIsOccupied())
-						{
-							return false;
-						}
-					}
-				}
-			}
-			else
-				return false;
 		}
 		else
-		{
 			return false;
+
+	}
+	else if (y2 > y1 && x2 < x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 + i][x1 - i].getIsOccupied() && y1 + i == y2 && x1 - i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Bishops(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 + i][x1 - i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
 		}
+		else
+			return false;
+	}
+	else if (y2 < y1 && x2 < x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 - i][x1 - i].getIsOccupied() && y1 - i == y2 && x1 - i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Bishops(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 - i][x1 - i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+			return false;
+	}
+	else if (y2 < y1 && x2 > x1)
+	{
+		if (abs(y2 - y1) == abs(x2 - x1))
+		{
+			for (int i = 1; i <= abs(y2 - y1); i++)
+			{
+				if (board[y1 - i][x1 + i].getIsOccupied() && y1 - i == y2 && x1 + i == x2)
+				{
+					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					{
+						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+						board[y2][x2].killChessPiece();
+
+						if (team == WHITE)
+						{
+							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+							numBlackPieces--;
+						}
+						else
+						{
+							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+							numWhitePieces--;
+						}
+
+						board[y2][x2].getChessPiece() = new Bishops(team);
+
+						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+						board[y1][x1].getChessPiece() = nullptr;
+
+						value = true;
+						board[y2][x2].setIsOccupied(value);
+
+						value = false;
+						board[y1][x1].setIsOccupied(value);
+
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+
+				}
+				else
+				{
+					if (board[y1 - i][x1 + i].getIsOccupied())
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+			return false;
+	}
+	else
+	{
+		return false;
 	}
 
 	board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
@@ -1354,234 +1342,229 @@ bool Game::moveRooke(int &x1, int &x2, int &y1, int &y2, Team team)
 
 	int deletedIndex = 0;
 
-	if (board[y2][x2].getIsOccupied() && board[y2][x2].getChessPiece()->getType() == 'K') {
-		return false;
+	if (x2 > x1 && y1 == y2)
+	{
+		for (int i = 1; i <= abs(x2 - x1); i++)
+		{
+			if (board[y1][x1 + i].getIsOccupied() && y1 == y2 && x1 + i == x2)
+			{
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
+					{
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
+					}
+					else
+					{
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
+					}
+
+					board[y2][x2].getChessPiece() = new Rookes(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1][x1 + i].getIsOccupied())
+				{
+					return false;
+				}
+			}
+		}
 	}
-	else {
-		if (x2 > x1 && y1 == y2)
+	else if (x2 < x1 && y1 == y2)
+	{
+		for (int i = 1; i <= abs(x2 - x1); i++)
 		{
-			for (int i = 1; i <= abs(x2 - x1); i++)
+			if (board[y1][x1 - i].getIsOccupied() && y1 == y2 && x1 - i == x2)
 			{
-				if (board[y1][x1 + i].getIsOccupied() && y1 == y2 && x1 + i == x2)
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
 				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
 					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						if (team == WHITE)
-						{
-							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-							numBlackPieces--;
-						}
-						else
-						{
-							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-							numWhitePieces--;
-						}
-
-						board[y2][x2].getChessPiece() = new Rookes(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
 					}
 					else
 					{
-						return false;
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
 					}
 
+					board[y2][x2].getChessPiece() = new Rookes(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
 				}
 				else
 				{
-					if (board[y1][x1 + i].getIsOccupied())
-					{
-						return false;
-					}
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1][x1 - i].getIsOccupied())
+				{
+					return false;
 				}
 			}
 		}
-		else if (x2 < x1 && y1 == y2)
+	}
+	else if (x2 == x1 && y2 < y1)
+	{
+		for (int i = 1; i <= abs(y2 - y1); i++)
 		{
-			for (int i = 1; i <= abs(x2 - x1); i++)
+			if (board[y1 - i][x1].getIsOccupied() && y1 - i == y2 && x1 == x2)
 			{
-				if (board[y1][x1 - i].getIsOccupied() && y1 == y2 && x1 - i == x2)
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
 				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
 					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						if (team == WHITE)
-						{
-							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-							numBlackPieces--;
-						}
-						else
-						{
-							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-							numWhitePieces--;
-						}
-
-						board[y2][x2].getChessPiece() = new Rookes(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
 					}
 					else
 					{
-						return false;
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
 					}
 
+					board[y2][x2].getChessPiece() = new Rookes(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
 				}
 				else
 				{
-					if (board[y1][x1 - i].getIsOccupied())
-					{
-						return false;
-					}
+					return false;
+				}
+
+			}
+			else
+			{
+				if (board[y1 - i][x1].getIsOccupied())
+				{
+					return false;
 				}
 			}
 		}
-		else if (x2 == x1 && y2 < y1)
+	}
+	else if (x2 == x1 && y2 > y1)
+	{
+		for (int i = 1; i <= abs(y2 - y1); i++)
 		{
-			for (int i = 1; i <= abs(y2 - y1); i++)
+			if (board[y1 + i][x1].getIsOccupied() && y1 + i == y2 && x1 == x2)
 			{
-				if (board[y1 - i][x1].getIsOccupied() && y1 - i == y2 && x1 == x2)
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
 				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					if (team == WHITE)
 					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						if (team == WHITE)
-						{
-							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-							numBlackPieces--;
-						}
-						else
-						{
-							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-							numWhitePieces--;
-						}
-
-						board[y2][x2].getChessPiece() = new Rookes(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
+						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+						numBlackPieces--;
 					}
 					else
 					{
-						return false;
+						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+						numWhitePieces--;
 					}
 
+					board[y2][x2].getChessPiece() = new Rookes(team);
+
+					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+					board[y1][x1].getChessPiece() = nullptr;
+
+					value = true;
+					board[y2][x2].setIsOccupied(value);
+
+					value = false;
+					board[y1][x1].setIsOccupied(value);
+
+					return true;
 				}
 				else
-				{
-					if (board[y1 - i][x1].getIsOccupied())
-					{
-						return false;
-					}
+				{ 
+					return false;
 				}
+
 			}
-		}
-		else if (x2 == x1 && y2 > y1)
-		{
-			for (int i = 1; i <= abs(y2 - y1); i++)
+			else
 			{
-				if (board[y1 + i][x1].getIsOccupied() && y1 + i == y2 && x1 == x2)
+				if (board[y1 + i][x1].getIsOccupied())
 				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						if (team == WHITE)
-						{
-							shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-							numBlackPieces--;
-						}
-						else
-						{
-							shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-							numWhitePieces--;
-						}
-
-						board[y2][x2].getChessPiece() = new Rookes(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-
-				}
-				else
-				{
-					if (board[y1 + i][x1].getIsOccupied())
-					{
-						return false;
-					}
+					return false;
 				}
 			}
 		}
-		else
-		{
-			return false;
-		}
+	}
+	else
+	{
+		return false;
 	}
 
 	board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
@@ -1626,55 +1609,28 @@ bool Game::moveHorse(int &x1, int &x2, int &y1, int &y2, Team team)
 
 	int deletedIndex = 0;
 
-	if (board[y2][x2].getIsOccupied() && board[y2][x2].getChessPiece()->getType() == 'K') {
-		return false;
-	}
-	else {
-		if ((x1 + 1 == x2 && y1 + 2 == y2) || (x1 - 1 == x2 && y1 + 2 == y2) || (x1 - 1 == x2 && y1 - 2 == y2) || (x1 + 1 == x2 && y1 - 2 == y2) || (x1 + 2 == x2 && y1 - 1 == y2) || (x1 + 2 == x2 && y1 + 1 == y2) || (x1 - 2 == x2 && y1 - 1 == y2) || (x1 - 2 == x2 && y1 + 1 == y2))
+	if ((x1 + 1 == x2 && y1 + 2 == y2) || (x1 - 1 == x2 && y1 + 2 == y2) || (x1 - 1 == x2 && y1 - 2 == y2) || (x1 + 1 == x2 && y1 - 2 == y2) || (x1 + 2 == x2 && y1 - 1 == y2) || (x1 + 2 == x2 && y1 + 1 == y2) || (x1 - 2 == x2 && y1 - 1 == y2) || (x1 - 2 == x2 && y1 + 1 == y2))
+	{
+		if (board[y2][x2].getIsOccupied())
 		{
-			if (board[y2][x2].getIsOccupied())
+			if (board[y2][x2].getChessPiece()->getTeam() != team)
 			{
-				if (board[y2][x2].getChessPiece()->getTeam() != team)
+				deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+				board[y2][x2].killChessPiece();
+
+				if (team == WHITE)
 				{
-					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-					board[y2][x2].killChessPiece();
-
-					if (team == WHITE)
-					{
-						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-						numBlackPieces--;
-					}
-					else
-					{
-						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-						numWhitePieces--;
-					}
-
-					board[y2][x2].getChessPiece() = new Horses(team);
-
-					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-					board[y1][x1].getChessPiece() = nullptr;
-
-					value = true;
-					board[y2][x2].setIsOccupied(value);
-
-					value = false;
-					board[y1][x1].setIsOccupied(value);
-
-					return true;
+					shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+					numBlackPieces--;
 				}
 				else
 				{
-					return false;
+					shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+					numWhitePieces--;
 				}
-			}
-			else
-			{
+
+				board[y2][x2].getChessPiece() = new Horses(team);
+
 				board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
 
 				board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
@@ -1691,10 +1647,32 @@ bool Game::moveHorse(int &x1, int &x2, int &y1, int &y2, Team team)
 
 				return true;
 			}
+			else
+			{
+				return false;
+			}
 		}
 		else
-			return false;
+		{
+			board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+			board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+			board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+			board[y1][x1].getChessPiece() = nullptr;
+
+			value = true;
+			board[y2][x2].setIsOccupied(value);
+
+			value = false;
+			board[y1][x1].setIsOccupied(value);
+
+			return true;
+		}
 	}
+	else
+		return false;
 }
 
 
@@ -1720,86 +1698,51 @@ bool Game::moveBlackPawn(int &x1, int &x2, int &y1, int &y2, Team team)
 
 	int deletedIndex = 0;
 
-	if (board[y2][x2].getIsOccupied() && board[y2][x2].getChessPiece()->getType() == 'K') {
-		return false;
-	}
-	else {
-		if (!board[y1][x1].getIsSpecialMoveValid() && y1 < y2 && y2 < y1 + 2)
+	if ((y1 < y2 && y2 < y1 + 2) || (board[y1][x1].getIsSpecialMoveValid() && (y1 < y2 && y2 <= y1 + 2)))
+	{
+		if (x1 == x2)
 		{
-			if (x1 == x2)
+			if (board[y2][x2].getIsOccupied())
 			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					return false;
-				}
-				else
-				{
-					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-					board[y1][x1].getChessPiece() = nullptr;
-
-					value = true;
-					board[y2][x2].setIsOccupied(value);
-
-					value = false;
-					board[y1][x1].setIsOccupied(value);
-
-					return true;
-				}
-			}
-			else if (x1 + 1 == x2 || x1 - 1 == x2)
-			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-						numWhitePieces--;
-
-						board[y2][x2].getChessPiece() = new Pawns(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-						return false;
-				}
+				return false;
 			}
 			else
 			{
-				return false;
+
+				if (board[y1][x1].getIsSpecialMoveValid())
+					board[y1][x1].setIsSpecialMoveValid(value = false);
+
+				board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+				board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+				board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+				board[y1][x1].getChessPiece() = nullptr;
+
+				value = true;
+				board[y2][x2].setIsOccupied(value);
+
+				value = false;
+				board[y1][x1].setIsOccupied(value);
+
+				return true;
 			}
 		}
-		else if (board[y1][x1].getIsSpecialMoveValid() && y1 < y2 && y2 <= y1 + 2)
+		else if ((x1 + 1 == x2 || x1 - 1 == x2) && y2 < y1 + 2)
 		{
-			if (x1 == x2)
+			if (board[y2][x2].getIsOccupied())
 			{
-				if (board[y2][x2].getIsOccupied())
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
 				{
-					return false;
-				}
-				else
-				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
+					numWhitePieces--;
+
+					board[y2][x2].getChessPiece() = new Pawns(team);
+
 					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
 
 					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
@@ -1816,49 +1759,17 @@ bool Game::moveBlackPawn(int &x1, int &x2, int &y1, int &y2, Team team)
 
 					return true;
 				}
-			}
-			else if (x1 + 1 == x2 || x1 - 1 == x2)
-			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						shiftArrayPositions(whiteTeam, deletedIndex, numWhitePieces);
-						numWhitePieces--;
-
-						board[y2][x2].getChessPiece() = new Pawns(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-						return false;
-				}
-			}
-			else
-			{
-				return false;
+				else
+					return false;
 			}
 		}
 		else
+		{
 			return false;
+		}
 	}
+	else
+		return false;
 }
 
 /*
@@ -1883,86 +1794,49 @@ bool Game::moveWhitePawn(int &x1, int &x2, int &y1, int &y2, Team team)
 
 	int deletedIndex = 0;
 
-	if (board[y2][x2].getIsOccupied() && board[y2][x2].getChessPiece()->getType() == 'K') {
-		return false;
-	}
-	else {
-		if (!board[y1][x1].getIsSpecialMoveValid() && y1 > y2 && y2 > y1 - 2)
+	if ((y1 > y2 && y2 > y1 - 2) || (board[y1][x1].getIsSpecialMoveValid() && (y1 > y2 && y2 >= y1 - 2)))
+	{
+		if (x1 == x2)
 		{
-			if (x1 == x2)
+			if (board[y2][x2].getIsOccupied())
 			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					return false;
-				}
-				else
-				{
-					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-					board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-					board[y1][x1].getChessPiece() = nullptr;
-
-					value = true;
-					board[y2][x2].setIsOccupied(value);
-
-					value = false;
-					board[y1][x1].setIsOccupied(value);
-
-					return true;
-				}
-			}
-			else if (x1 + 1 == x2 || x1 - 1 == x2)
-			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-						numBlackPieces--;
-
-						board[y2][x2].getChessPiece() = new Pawns(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-						return false;
-				}
+				return false;
 			}
 			else
 			{
-				return false;
+				if (board[y1][x1].getIsSpecialMoveValid())
+					board[y1][x1].setIsSpecialMoveValid(value = false);
+				board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
+
+				board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
+
+				board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
+
+				board[y1][x1].getChessPiece() = nullptr;
+
+				value = true;
+				board[y2][x2].setIsOccupied(value);
+
+				value = false;
+				board[y1][x1].setIsOccupied(value);
+
+				return true;
 			}
 		}
-		else if (board[y1][x1].getIsSpecialMoveValid() && y1 > y2 && y2 >= y1 - 2)
+		else if ((x1 + 1 == x2 || x1 - 1 == x2) && y2 > y1 - 2)
 		{
-			if (x1 == x2)
+			if (board[y2][x2].getIsOccupied())
 			{
-				if (board[y2][x2].getIsOccupied())
+				if (board[y2][x2].getChessPiece()->getTeam() != team)
 				{
-					return false;
-				}
-				else
-				{
+					deletedIndex = board[y2][x2].getChessPiece()->getIndex();
+					board[y2][x2].killChessPiece();
+
+					shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
+					numBlackPieces--;
+
+					board[y2][x2].getChessPiece() = new Pawns(team);
+
 					board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
 
 					board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
@@ -1979,85 +1853,420 @@ bool Game::moveWhitePawn(int &x1, int &x2, int &y1, int &y2, Team team)
 
 					return true;
 				}
-			}
-			else if (x1 + 1 == x2 || x1 - 1 == x2)
-			{
-				if (board[y2][x2].getIsOccupied())
-				{
-					if (board[y2][x2].getChessPiece()->getType() == 'K')
-					{
-						return false;
-					}
-					else if (board[y2][x2].getChessPiece()->getTeam() != team)
-					{
-						deletedIndex = board[y2][x2].getChessPiece()->getIndex();
-						board[y2][x2].killChessPiece();
-
-						shiftArrayPositions(blackTeam, deletedIndex, numBlackPieces);
-						numBlackPieces--;
-
-						board[y2][x2].getChessPiece() = new Pawns(team);
-
-						board[y1][x1].getChessPiece()->move(sf::Vector2i(x2, y2));
-
-						board[y2][x2].setChessPiece(board[y1][x1].getChessPiece());
-
-						board[y2][x2].getChessPiece()->setPosition(board[y2][x2].getPosition());
-
-						board[y1][x1].getChessPiece() = nullptr;
-
-						value = true;
-						board[y2][x2].setIsOccupied(value);
-
-						value = false;
-						board[y1][x1].setIsOccupied(value);
-
-						return true;
-					}
-					else
-						return false;
-				}
-			}
-			else
-			{
-				return false;
+				else
+					return false;
 			}
 		}
 		else
+		{
 			return false;
+		}
 	}
+	else
+		return false;
 }
 
 bool Game::check(ChessPieces *&piece)
 {
 	if (piece->getType() == 'K')
 	{
-
-	}
-	if (piece->getType() == 'Q')
-	{
-
-	}
-	if (piece->getType() == 'R')
-	{
-
-	}
-	if (piece->getType() == 'B')
-	{
-
-	}
-	if (piece->getType() == 'H')
-	{
-
-	}
-	if (piece->getType() == 'P' && piece->getTeam() == WHITE)
-	{
-		if (board[piece->getY() - 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getType() == 'K' ) && board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		if (piece->getX() - 1 >= 0 && piece->getY() - 1 >= 0 && board[piece->getY() - 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
 		{
 			cout << "Check" << endl;
 			return true;
 		}
-		else if(board[piece->getY() - 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		else if (piece->getY() - 1 >= 0 && piece->getX() + 1 < 8 && board[piece->getY() - 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() + 1 < 8 && piece->getX() - 1 >= 0 && board[piece->getY() + 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() + 1 < 8 && piece->getX() + 1 < 8 && board[piece->getY() + 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() + 1 < 8 && piece->getX() && board[piece->getY() + 1][piece->getX()].getIsOccupied() && (board[piece->getY() + 1][piece->getX()].getChessPiece()->getType() == 'K') && board[piece->getY() + 1][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() - 1 >= 0 && piece->getX() && board[piece->getY() - 1][piece->getX()].getIsOccupied() && (board[piece->getY() - 1][piece->getX()].getChessPiece()->getType() == 'K') && board[piece->getY() - 1][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() && piece->getX() - 1 >= 0 && board[piece->getY()][piece->getX() - 1].getIsOccupied() && (board[piece->getY()][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY()][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() && piece->getX() + 1 < 8 && board[piece->getY()][piece->getX() + 1].getIsOccupied() && (board[piece->getY()][piece->getX() + 1].getChessPiece()->getType() == 'K') && board[piece->getY()][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	if (piece->getType() == 'Q')
+	{
+		for (int i = 1; piece->getX() + i < 8 && piece->getY() + i < 8; i++)
+		{
+			if (board[piece->getY() + i][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0 && piece->getX() + i < 8; i++)
+		{
+			if (board[piece->getY() - i][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0 && piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY() - i][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() + i < 8 && piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY() + i][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() + i < 8; i++)
+		{
+			if (board[piece->getY() + i][piece->getX()].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX()].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0; i++)
+		{
+			if (board[piece->getY() - i][piece->getX()].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX()].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getX() + i < 8; i++)
+		{
+			if (board[piece->getY()][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY()][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY()][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY()][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY()][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY()][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+	}
+
+	if (piece->getType() == 'R')
+	{
+		for (int i = 1; piece->getX() + i < 8; i++)
+		{
+			if (board[piece->getY()][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY()][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY()][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY()][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY()][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY()][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0; i++)
+		{
+			if (board[piece->getY() - i][piece->getX()].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX()].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() + i < 8; i++)
+		{
+			if (board[piece->getY() + i][piece->getX()].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX()].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX()].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+	}
+	if (piece->getType() == 'B')
+	{
+		for (int i = 1; piece->getX() + i < 8 && piece->getY() + i < 8; i++)
+		{
+			if (board[piece->getY() + i][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0 && piece->getX() + i < 8; i++)
+		{
+			if (board[piece->getY() - i][piece->getX() + i].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX() + i].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX() + i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() - i >= 0 && piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY() - i][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY() - i][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY() - i][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+		for (int i = 1; piece->getY() + i < 8 && piece->getX() - i >= 0; i++)
+		{
+			if (board[piece->getY() + i][piece->getX() - i].getIsOccupied())
+			{
+				if (board[piece->getY() + i][piece->getX() - i].getChessPiece()->getType() == 'K' && board[piece->getY() + i][piece->getX() - i].getChessPiece()->getTeam() != piece->getTeam())
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+				else
+				{
+					i = 8;
+				}
+			}
+		}
+	}
+	if (piece->getType() == 'H')
+	{
+		if (piece->getY() + 2 < 8 && piece->getX() + 1 < 8)
+		{
+			if (board[piece->getY() + 2][piece->getX() + 1].getIsOccupied())
+			{
+				if ((board[piece->getY() + 2][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 2][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() + 2 < 8 && piece->getX() - 1 >= 0)
+		{
+			if (board[piece->getY() + 2][piece->getX() - 1].getIsOccupied())
+			{
+				if ((board[piece->getY() + 2][piece->getX() - 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 2][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() - 2 >= 0 && piece->getX() - 1 >= 0)
+		{
+			if (board[piece->getY() - 2][piece->getX() - 1].getIsOccupied())
+			{
+				if ((board[piece->getY() - 2][piece->getX() - 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 2][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() - 2 >= 0 && piece->getX() + 1 < 8)
+		{
+			if (board[piece->getY() - 2][piece->getX() + 1].getIsOccupied())
+			{
+				if ((board[piece->getY() - 2][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 2][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() - 1 >= 0 && piece->getX() + 2 < 8)
+		{
+			if (board[piece->getY() - 1][piece->getX() + 2].getIsOccupied())
+			{
+				if ((board[piece->getY() - 1][piece->getX() + 2].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() + 2].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() + 1 < 8 && piece->getX() + 2 < 8)
+		{
+			if (board[piece->getY() + 1][piece->getX() + 2].getIsOccupied())
+			{
+				if ((board[piece->getY() + 1][piece->getX() + 2].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() + 2].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() - 1 >= 0 && piece->getX() - 2 >= 0)
+		{
+			if (board[piece->getY() - 1][piece->getX() - 2].getIsOccupied())
+			{
+				if ((board[piece->getY() - 1][piece->getX() - 2].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() - 2].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+		if (piece->getY() + 1 < 8 && piece->getX() - 2 >= 0)
+		{
+			if (board[piece->getY() + 1][piece->getX() - 2].getIsOccupied())
+			{
+				if ((board[piece->getY() + 1][piece->getX() - 2].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() - 2].getChessPiece()->getTeam() != piece->getTeam()))
+				{
+					cout << "Check" << endl;
+					return true;
+				}
+			}
+		}
+	}
+	if (piece->getType() == 'P' && piece->getTeam() == WHITE)
+	{
+		if (piece->getY() - 1 >= 0 && piece->getX() - 1 >= 0 && board[piece->getY() - 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY() - 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		{
+			cout << "Check" << endl;
+			return true;
+		}
+		else if (piece->getY() - 1 >= 0 && piece->getX() + 1 < 8 && board[piece->getY() - 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() - 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
 		{
 			cout << "Check" << endl;
 			return true;
@@ -2070,12 +2279,12 @@ bool Game::check(ChessPieces *&piece)
 	}
 	if (piece->getType() == 'P' && piece->getTeam() == BLACK)
 	{
-		if (board[piece->getY() + 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getType() == 'K' ) && board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
+		if (piece->getY() + 1 < 8 && piece->getX() - 1 >= 0 && board[piece->getY() + 1][piece->getX() - 1].getIsOccupied() && (board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getType() == 'K') && board[piece->getY() + 1][piece->getX() - 1].getChessPiece()->getTeam() != piece->getTeam())
 		{
 			cout << "Check" << endl;
 			return true;
 		}
-		else if(board[piece->getY() + 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
+		else if (piece->getY() + 1 < 8 && piece->getX() + 1 < 8 && board[piece->getY() + 1][piece->getX() + 1].getIsOccupied() && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getType() == 'K' && board[piece->getY() + 1][piece->getX() + 1].getChessPiece()->getTeam() != piece->getTeam())
 		{
 			cout << "Check" << endl;
 			return true;
