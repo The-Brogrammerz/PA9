@@ -166,7 +166,7 @@ int main()
 						{
 							playing = true;
 						}
-						else if (menu.getSelectedItem() == 3)
+						else if (menu.getSelectedItem() == 2)
 						{
 							exit(EXIT_SUCCESS);
 						}
