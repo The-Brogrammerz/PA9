@@ -12,6 +12,14 @@ public:
 	bool getIsOccupied();
 	void setIsOccupied(bool &s);
 
+	bool getIsSpecialMoveValid()
+	{
+		return isSpecialMoveValid;
+	}
+	void setIsSpecialMoveValid(bool &s)
+	{
+		isSpecialMoveValid = s;
+	}
 	void setChessPiece(ChessPieces *&piece);
 
 	ChessPieces *& getChessPiece();  // Must return a pointer to a reference of the chess piece. Do not change.
@@ -19,7 +27,7 @@ public:
 	bool killChessPiece();
 protected:
 	bool spaceIsOccupied;
-
+	bool isSpecialMoveValid;
 	ChessPieces *piece; // Stores the chess piece that is currently located at the current chess board piece
 };
 
@@ -36,6 +44,7 @@ ChessBoard::ChessBoard(const sf::Color &color, const sf::Vector2f &position, con
 
 	spaceIsOccupied = false;
 	piece = nullptr;
+	isSpecialMoveValid = false;
 }
 
 ChessBoard::~ChessBoard()
