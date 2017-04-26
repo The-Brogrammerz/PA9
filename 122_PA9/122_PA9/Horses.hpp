@@ -66,3 +66,4 @@ int Horses::checkIfCheckmate() // returns 0 if no, 1 if check, 2 if checkmate
 {
 	return 0;
 }
+

@@ -16,6 +16,52 @@
 
 int main()
 {
+
+	//Courtest of SFML tutorial and CodingMadeEasy.com/Socket-usage
+	//TCP SOCKET//
+	/// Must establish a connection in order for it to work, does not accomadate for some data being lost //
+
+	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
+	sf::TcpSocket socket;
+	char connectionType;
+	char mode;
+	std::string textData = "Connected to: ";
+	std::size_t received;
+	char buffer[63240];
+
+	//HOST Server or Receiver Client
+	std::cout << ("Each player please either host or become the client...") << std::endl;
+	std::cout << "(Enter (s) for Server, Enter (c) for client" << endl;
+	std::cin >> connectionType;
+
+	/// NOTE IF YOU ARE TESTING CONNECTION BY YOURSELF, OPEN 
+	/// DOCUMENTS>>GITHUB>>PA9>>122_PA9>>DEBUG 122_PA9 (The Application)
+
+	// Used ipconfig to figure out IP address
+	// Used netstat -a to figure out port
+
+	if (connectionType == 's')
+	{
+		sf::TcpListener listener; //listens for a port
+		listener.listen(63240);
+		listener.accept(socket);
+		textData += "Server";
+		socket.send(textData.c_str(), textData.length() + 1);
+	}
+	else if (connectionType == 'c')
+	{
+		socket.connect(ip, 63240); //connects to the port
+		textData += "Client: ";
+	}
+	socket.send(textData.c_str(), textData.length() + 1);
+	socket.receive(buffer, sizeof(buffer), received);
+
+	std::cout << buffer << std::endl;
+	//Continues onto the game both players play on one terminal although two are displayed
+	system("pause");
+
+
+
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Chess"); // The entire program will run on this single window
 
 	Menu menu(WIDTH, HEIGHT); // Interface for the Menu
@@ -158,7 +204,6 @@ int main()
 					{
 						p2IsPressed = false;
 					}
-					
 					else if (enterIsPressed && e.key.code == sf::Keyboard::Return)
 					{
 						if (menu.getSelectedItem() == 1) // If the first option is selected, the first option being Play, set playing to be true
