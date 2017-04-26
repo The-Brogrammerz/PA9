@@ -28,7 +28,6 @@ int main()
 	bool playing = false;
 	bool occupiedBox = false;
 
-	bool moveSuccessful = false;
 	bool turnSuccess = false;
 
 	int direction = 1, i = 0, imageWidth = 0, imageHeight = 0, scalar = 0;
@@ -58,7 +57,7 @@ int main()
 					case sf::Event::MouseButtonPressed:
 						if (totalTurns % 2 == 0)
 						{
-							if (!occupiedBox && !moveSuccessful)
+							if (!occupiedBox)
 							{
 								cout << "Select Piece: " << endl;
 
@@ -86,7 +85,7 @@ int main()
 						}
 						else
 						{
-							if (!occupiedBox && !moveSuccessful)
+							if (!occupiedBox)
 							{
 								cout << "Select Piece: " << endl;
 
@@ -166,7 +165,7 @@ int main()
 						{
 							playing = true;
 						}
-						else if (menu.getSelectedItem() == 3)
+						else if (menu.getSelectedItem() == 2)
 						{
 							exit(EXIT_SUCCESS);
 						}

@@ -16,7 +16,7 @@ public:
 
 private:
 	int itemSelected;
-	sf::Text options[4];
+	sf::Text options[3];
 	sf::Font font;
 };
 
@@ -42,15 +42,10 @@ Menu::Menu(float width, float height)
 
 	options[2].setColor(sf::Color::White);
 	options[2].setPosition(sf::Vector2f(width / 2, height / 4 * 2));
-	options[2].setString("Rules");
+	options[2].setString("Exit");
 	options[2].setCharacterSize(52);
 	options[2].setFont(font);
 
-	options[3].setColor(sf::Color::White);
-	options[3].setPosition(sf::Vector2f(width / 2, height / 4 * 3));
-	options[3].setString("Exit");
-	options[3].setCharacterSize(52);
-	options[3].setFont(font);
 
 	itemSelected = 1;
 }
@@ -62,7 +57,7 @@ Menu::~Menu()
 
 void Menu::drawMenu(sf::RenderWindow &win)
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 3; i++)
 		win.draw(options[i]);
 }
 
@@ -78,7 +73,7 @@ void Menu::up()
 
 void Menu::down()
 {
-	if (itemSelected < 3)
+	if (itemSelected < 2)
 	{
 		options[itemSelected].setColor(sf::Color::White);
 		itemSelected++;
