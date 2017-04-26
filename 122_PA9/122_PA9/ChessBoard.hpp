@@ -74,7 +74,19 @@ ChessPieces *& ChessBoard::getChessPiece()  // Must return a pointer to a refere
 
 bool ChessBoard::killChessPiece()
 {
-	delete piece;
-
-	return true;
+	if (piece->getType() != 'K')
+	{
+		delete piece;
+		return true;
+	}
+	switch (piece->getTeam())
+	{
+	case BLACK:
+		std::cout << "White side wins!";
+		break;
+	case WHITE:
+		std::cout << "Black side wins!";
+		break;
+	}
+	exit(EXIT_SUCCESS);
 }
